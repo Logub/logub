@@ -1,0 +1,4 @@
+logub:
+  redis:
+    client: localhost
+    port: 6379
