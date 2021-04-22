@@ -21,6 +21,8 @@
         <org.mapstruct.version>1.4.1.Final</org.mapstruct.version>
         <spring.cloud.version>Hoxton.SR9</spring.cloud.version>
         <redis.search>2.0.0</redis.search>
+        <guava.version>30.1.1-jre</guava.version>
+        <apache.commons.version>3.12.0</apache.commons.version>
     </properties>
     <dependencies>
         <!-- SPRING -->
@@ -38,6 +40,17 @@
             <artifactId>jredisearch</artifactId>
             <version>${redis.search}</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${apache.commons.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
