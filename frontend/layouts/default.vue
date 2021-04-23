@@ -8,8 +8,8 @@
       </v-container>
     </v-main>
 
-    <v-footer app>
-      <span class="mx-auto">&copy; Logub - Build on Redis Hackathon - {{ new Date().getFullYear() }}</span>
+    <v-footer app inset>
+      <span class="text-caption mx-auto">&copy; Logub - Build on Redis Hackathon - {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
 </template>
