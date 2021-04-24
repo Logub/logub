@@ -1,5 +1,25 @@
 version: "3.9"
 services:
+  web:
+    image: httpd
+    ports:
+      - "80:80"
+    links:
+      - fluentd
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: httpd.access
+  fluentd:
+    build: ./fluentd
+    volumes:
+      - ./fluentd/conf:/fluentd/etc
+    links:
+      - "redis"
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
   redis:
     image: "redislabs/redismod"
     command: ["/usr/local/etc/redis/redis.conf","--bind","redis","--port", "6379"]
