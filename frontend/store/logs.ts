@@ -1,4 +1,6 @@
 import { Module, VuexAction, VuexModule, VuexMutation } from 'nuxt-property-decorator';
+import { LogLevel } from '~/models/LogLevel';
+import { LogubLog } from '~/models/LogubLog';
 
 @Module({
   name: 'logs',
@@ -18,7 +20,7 @@ export default class Logs extends VuexModule {
       id: `azbve-obivoz-zabioz-abizoa-${v}`,
       index: "principal",
       timestamp: Date.now() + v,
-      level: "INFO",
+      level: LogLevel.INFO,
       service: "logub-backend-api",
       businessProperties: {},
       tags: {},

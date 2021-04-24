@@ -1,4 +1,4 @@
-interface SystemProperties {
+export interface SystemProperties {
   imageName?: string;
   container_name?: string;
   service?: string;

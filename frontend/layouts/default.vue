@@ -8,7 +8,7 @@
       </v-container>
     </v-main>
 
-    <v-footer app inset>
+    <v-footer app inset absolute>
       <span class="text-caption mx-auto">&copy; Logub - Build on Redis Hackathon - {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
