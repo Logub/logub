@@ -5,12 +5,31 @@
       calculate-widths
       :headers="headers"
       :items="logsData"
+      hide-default-footer
+      :items-per-page="pageSize"
       item-key="id"
-      class="rounded-0 logs-table"
+      class="rounded-0 logs-table mb-15"
     >
-      <template v-slot:item.timestamp="{ item, value }">
+      <template v-slot:footer="{ options }">
+        <v-progress-linear
+          v-if="isLoading"
+          color="primary"
+          indeterminate
+        />
+        <div v-if="isLoading" class="text-center py-2 mx-auto caption">Fetching more logs...</div>
+        <div v-else class="text-center py-2 mx-auto caption border-top">No more logs</div>
+      </template>
+      <template v-slot:item.timestamp="{ item, value, index }">
         <span class="level-item" :style="logLevelColor(item.level)"/>
-        <span>{{ formatDate(value) }}</span>
+        <span v-intersect="{
+            handler: onIntersect,
+            options: {
+              threshold: [0, 0.5, 1.0]
+            }
+          }">
+          <span style="display: none">{{ index }}</span>
+          {{ formatDate(value) }}
+        </span>
       </template>
     </v-data-table>
   </v-container>
@@ -28,6 +47,10 @@ import { LogLevel, logLevelColor } from '~/models/LogLevel';
   name: "LogViewer"
 })
 export default class LogViewer extends Vue {
+  private pageSize: number = Infinity;
+
+  private currentPageSize: number = 50;
+
   private headers: DataTableHeader[] = [
     {
       text: 'DATE',
@@ -51,12 +74,40 @@ export default class LogViewer extends Vue {
     },
   ];
 
+  get isLoading() {
+    return logs.loading;
+  }
+
   get logsData() {
     return logs.logs;
   }
 
+  get dataLength() {
+    return 1000;
+  }
+
   get logLevelColor() {
     return (level: LogLevel) => `border-color: ${logLevelColor(level)}`;
+  }
+
+  mounted() {
+    this.fetchMoreLogs();
+  }
+
+  onIntersect(entries: IntersectionObserverEntry[], observer: IntersectionObserver) {
+    // If the last item intersects and theres more pages to load, emit 'loadMoreItems'
+    if (entries[0].isIntersecting
+      && ((entries[0].target.firstChild?.firstChild?.nodeValue ?? "") === ("" + (this.currentPageSize - 1)))
+      && this.currentPageSize < this.dataLength
+    ) {
+      console.log("YES", entries);
+      this.currentPageSize += 50;
+      this.fetchMoreLogs();
+    }
+  }
+
+  private fetchMoreLogs() {
+    logs.updateLogs({ size: this.currentPageSize });
   }
 
   private formatDate(dateNumber: number): string {
@@ -66,6 +117,10 @@ export default class LogViewer extends Vue {
 }
 </script>
 <style scoped>
+.border-top {
+  border-top: thin solid #DDD;
+}
+
 .logs-container {
   font-family: monospace;
 }
@@ -79,6 +134,9 @@ export default class LogViewer extends Vue {
   padding: 0 8px !important;
   font-size: 12px !important;
   white-space: nowrap;
+  overflow: hidden;
+  max-width: 100px;
+  text-overflow: ellipsis;
 }
 
 .level-item {
