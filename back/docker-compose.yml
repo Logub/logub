@@ -11,6 +11,26 @@ services:
       options:
         fluentd-address: localhost:24224
         tag: httpd.access
+  golang:
+    build: ../generator/golang
+    image: "golang-generator:latest"
+    links:
+      - fluentd
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: go.generator
+  python:
+    build: ../generator/python
+    image: "python-generator:latest"
+    links:
+      - fluentd
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: python.generator
   fluentd:
     build: ./fluentd
     volumes:
