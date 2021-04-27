@@ -25,5 +25,5 @@ public class LogEventDto {
  private Map<String, Object> businessProperties;
  private Optional<String> message = Optional.empty();
  private Instant timestamp = Instant.now();
- private String level;
+ private LogLevelDto level;
 }

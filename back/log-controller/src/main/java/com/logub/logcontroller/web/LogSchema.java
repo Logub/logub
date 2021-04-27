@@ -2,8 +2,10 @@ package com.logub.logcontroller.web;
 
 import com.logub.logcontroller.api.LogSearchDto;
 import com.logub.logcontroller.api.LogubLogDto;
+import com.logub.logcontroller.domain.service.LogSchemaService;
 import com.logub.logcontroller.domain.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,19 +16,14 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/logs")
-public class LogController {
+public class LogSchema {
   @Autowired
-  private LogService logService;
+  private LogSchemaService logService;
   @Autowired
   private WebMapper mapper;
-  @PostMapping
-  public void logs(@RequestBody LogubLogDto logDto){
-    logService.saveLog(mapper.toDomain(logDto));
-  }
 
-  @PostMapping(path = "/search")
-  public List<LogubLogDto> searchLog(@RequestBody LogSearchDto logDto){
-    return logService.getLogs(mapper.toDomain(logDto)).stream().map(v -> mapper.toWeb(v)).collect(
-        Collectors.toList());
+  @GetMapping(path = "/schema")
+  public List<String> searchLog(){
+    return logService.getSchema();
   }
 }

@@ -5,16 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class RSystemProperties {
- private Optional<String> imageName;
- private Optional<String>  containerName;
- private Optional<String>  service;
- private Optional<String>  env;
- private Optional<String>  host;
+public class RSystemProperties implements Serializable {
+ private String imageName;
+ private String  containerName;
+ private String  service;
+ private String  env;
+ private String  host;
 }

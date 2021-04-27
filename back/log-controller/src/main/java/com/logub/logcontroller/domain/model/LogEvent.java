@@ -27,5 +27,5 @@ public class LogEvent {
  @Builder.Default
  private Instant timestamp = Instant.now();
  @NonNull
- private String level;
+ private LogLevel level;
 }

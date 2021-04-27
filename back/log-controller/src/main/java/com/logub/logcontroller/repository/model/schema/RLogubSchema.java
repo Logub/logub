@@ -1,19 +1,17 @@
-package com.logub.logcontroller.api;
+package com.logub.logcontroller.repository.model.schema;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Value;
 
-import java.time.Instant;
 import java.util.Map;
-import java.util.Optional;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class LogSearchDto {
-
-  private Optional<String> text;
+public class RLogubSchema {
+  private Map<String, String> schema;
 }

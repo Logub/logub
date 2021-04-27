@@ -1,11 +1,13 @@
 package com.logub.logcontroller.repository.model;
 
+import com.logub.logcontroller.domain.model.LogLevel;
 import com.logub.logcontroller.domain.model.SystemProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
@@ -14,11 +16,11 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class RLogEvent {
+public class RLogEvent implements Serializable{
  private String service;
- private SystemProperties tags;
+ private RSystemProperties tags;
  private Map<String, Object> businessProperties;
- private Optional<String> message = Optional.empty();
+ private String message;
  private Instant timestamp = Instant.now();
- private String level;
+ private LogLevel level;
 }
