@@ -1,5 +1,6 @@
 <template>
-  <v-container class="logs-container">
+  <v-container fluid class="logs-container">
+    <search-bar/>
     <v-data-table
       dense
       calculate-widths
@@ -7,6 +8,7 @@
       :items="logsData"
       hide-default-footer
       :items-per-page="pageSize"
+      no-data-text="No logs found here"
       item-key="id"
       class="rounded-0 logs-table mb-15"
     >
@@ -42,9 +44,11 @@ import { logs } from '~/utils/store-accessor';
 import { Moment } from 'moment';
 import moment from 'moment/moment';
 import { LogLevel, logLevelColor } from '~/models/LogLevel';
+import SearchBar from '~/components/log-viewer/SearchBar.vue';
 
 @Component({
-  name: "LogViewer"
+  name: "LogViewer",
+  components: { SearchBar }
 })
 export default class LogViewer extends Vue {
   private pageSize: number = Infinity;
@@ -70,7 +74,8 @@ export default class LogViewer extends Vue {
       text: 'MESSAGE',
       align: 'start',
       value: 'message',
-      divider: true
+      divider: true,
+      sortable: false
     },
   ];
 
