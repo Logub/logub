@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -28,7 +29,7 @@ public class LogService {
     logRepository.save(mapper.toRepository(log));
   }
 
-  public List<LogubLog> getLogs(LogSearch text) {
-    throw new UnsupportedOperationException();
+  public List<LogubLog> searchLog(LogSearch search) {
+    return logRepository.search(search).stream().map(v -> mapper.toDomain(v)).collect(Collectors.toList());
   }
 }

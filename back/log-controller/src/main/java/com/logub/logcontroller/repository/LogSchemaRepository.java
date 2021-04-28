@@ -42,7 +42,7 @@ public class LogSchemaRepository {
               .level(LogLevel.ERROR)
               .message("nothing")
               .service("nothing")
-              .timestamp(Instant.now())
+              .timestamp(Instant.now().toEpochMilli())
               .tags(RSystemProperties.builder()
                   .containerName("nothing")
                   .env("env")

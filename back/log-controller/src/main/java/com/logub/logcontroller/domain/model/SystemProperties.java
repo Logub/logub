@@ -12,9 +12,18 @@ import java.util.Optional;
 @AllArgsConstructor(access = PRIVATE)
 @Builder(toBuilder = true)
 public class SystemProperties {
- private Optional<String> imageName;
- private Optional<String>  containerName;
- private Optional<String>  service;
- private Optional<String>  env;
- private Optional<String>  host;
+ @Builder.Default
+ Optional<String> imageName = Optional.empty();
+
+ @Builder.Default
+ Optional<String>  containerName= Optional.empty();
+
+ @Builder.Default
+ Optional<String>  service= Optional.empty();
+
+ @Builder.Default
+ Optional<String>  env= Optional.empty();
+
+ @Builder.Default
+ Optional<String>  host= Optional.empty();
 }

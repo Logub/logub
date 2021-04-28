@@ -21,6 +21,6 @@ public class RLogEvent implements Serializable{
  private RSystemProperties tags;
  private Map<String, Object> businessProperties;
  private String message;
- private Instant timestamp = Instant.now();
+ private long timestamp = Instant.now().toEpochMilli();
  private LogLevel level;
 }

@@ -26,7 +26,7 @@ public class LogController {
 
   @PostMapping(path = "/search")
   public List<LogubLogDto> searchLog(@RequestBody LogSearchDto logDto){
-    return logService.getLogs(mapper.toDomain(logDto)).stream().map(v -> mapper.toWeb(v)).collect(
+    return logService.searchLog(mapper.toDomain(logDto)).stream().map(v -> mapper.toWeb(v)).collect(
         Collectors.toList());
   }
 }

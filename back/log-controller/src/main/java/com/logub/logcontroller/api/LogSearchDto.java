@@ -5,7 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -14,6 +15,17 @@ import java.util.Optional;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class LogSearchDto {
+  @Builder.Default
+  private Optional<String> text = Optional.empty();
+  @Builder.Default
+  private Optional<SystemPropertiesDto> tags = Optional.empty();
 
-  private Optional<String> text;
+  @Builder.Default
+  private Map<String, String> businessProperties = Collections.emptyMap();
+  @Builder.Default
+  private int limit = 25;
+  @Builder.Default
+  private int offset = 0;
+  @Builder.Default
+  private List<LogLevelDto> levels = Collections.emptyList();
 }
