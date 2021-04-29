@@ -1,5 +1,6 @@
 package com.logub.logcontroller.api;
 
+import com.logub.logcontroller.api.schema.LogubSortDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Level;
 
 @Data
 @AllArgsConstructor
@@ -28,4 +30,6 @@ public class LogSearchDto {
   private int offset = 0;
   @Builder.Default
   private List<LogLevelDto> levels = Collections.emptyList();
+  @Builder.Default
+  private Optional<LogubSortDto> sort = Optional.empty();
 }

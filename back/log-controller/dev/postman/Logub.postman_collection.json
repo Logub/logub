@@ -1,0 +1,166 @@
+{
+	"info": {
+		"_postman_id": "6724be14-edaa-4057-add7-039cf804a95c",
+		"name": "Logub",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "SCHEMA",
+			"item": [
+				{
+					"name": "GET SCHEMA",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/logs/schema",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"logs",
+								"schema"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADD FIELD",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"Tag\",\n    \"name\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/logs/schema",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"logs",
+								"schema"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "LOG",
+			"item": [
+				{
+					"name": "CREATE",
+					"item": [
+						{
+							"name": "CREATE LOG",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function getRandomArbitrary(min, max) {",
+											"    return Math.random() * (max - min) + min;",
+											"}",
+											"",
+											"function getRandomInt(min, max) {",
+											"    min = Math.ceil(min);",
+											"    max = Math.floor(max);",
+											"    return Math.floor(Math.random() * (max - min + 1)) + min;",
+											"}",
+											"",
+											"function setEnvRandomly(env, min, max, array){",
+											"    pm.collectionVariables.set(env, array[getRandomInt(min, max)]);",
+											"}",
+											"",
+											"setEnvRandomly('level', 0, 2, ['INFO', 'ERROR', 'WARN']);",
+											"setEnvRandomly('services', 0, 2, ['customer', 'logIngester', 'no-battery']);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"event\":{\n        \"service\": \"{{services}}\",\n        \"tags\": {\n            \"env\":\"dev\",\n            \"containerName\": \"docker-{{$randomBankAccount}}\"\n        },\n        \"businessProperties\": {\n            \"test\": \"test\",\n            \"businessValue\": \"test\"\n        },\n        \"message\": \"{{$randomCatchPhrase}}\",\n        \"level\":\"{{level}}\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/logs",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"logs"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "SEARCH LOG",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"businessProperties\": {},\n    \"tags\": {\n        \"env\": \"dev\"\n    },\n    \"sort\": {\n        \"field\": \"event.timestamp\",\n        \"order\": \"ASC\"\n    },\n    \"limit\": 100,\n    \"offset\": 0\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/logs/search",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"logs",
+						"search"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "level",
+			"value": ""
+		},
+		{
+			"key": "services",
+			"value": ""
+		}
+	]
+}

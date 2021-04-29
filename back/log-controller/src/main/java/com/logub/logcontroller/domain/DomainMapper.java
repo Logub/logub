@@ -19,7 +19,7 @@ public abstract class DomainMapper{
     return string.orElse(null);
   }
   public long map(Instant now){
-    return now.getEpochSecond();
+    return now.toEpochMilli();
   }
 
   public Instant map(long now){
