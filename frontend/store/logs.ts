@@ -1,19 +1,8 @@
 import { Module, VuexAction, VuexModule, VuexMutation } from 'nuxt-property-decorator';
-import { LogLevel } from '~/models/LogLevel';
 import { LogubLog } from '~/models/LogubLog';
-
-const logTemplate: (v: number) => LogubLog = (v: number) => ({
-  id: `azbve-obivoz-zabioz-abizoa-${v}`,
-  index: "principal",
-  timestamp: Date.now() + v,
-  level: v % 4 === 0 ? LogLevel.INFO : (v % 4 === 1 ? LogLevel.WARN : (v % 4 === 2 ? LogLevel.ERROR : LogLevel.DEBUG)),
-  service: "logub-backend-api",
-  businessProperties: {},
-  tags: {},
-  message: "API Started - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ut leo nec magna tristique pulvinar. Sed et sagittis nisi. Proin posuere mi in tortor viverra, a suscipit est molestie. Nunc vulputate varius urna id venenatis. In facilisis dolor vel cursus malesuada. Maecenas ut turpis accumsan, suscipit dolor a, maximus tortor. Aenean id lacinia metus. Ut bibendum maximus congue. Quisque vulputate massa tortor, in consequat leo elementum quis. Morbi mauris tortor, blandit in sem cursus, suscipit sollicitudin turpis."
-});
-
-const logs: LogubLog[] = [...Array(200).keys()].map(i => logTemplate(i));
+import { Api } from '~/utils/api';
+import { Mapper } from '~/utils/mapper';
+import { LogubLogDto } from '~/models/dto/LogubLogDto';
 
 @Module({
   name: 'logs',
@@ -34,14 +23,26 @@ export default class Logs extends VuexModule {
   }
 
   @VuexAction
-  updateLogs(options: { size: number }): void {
+  async updateLogs(options: { size: number }): Promise<void> {
     this.setLoading(true);
-    const filteredLogs = logs.slice(0, options.size);
+    try {
+      const logs = await Api.searchLogs({
+        businessProperties: {},
+        tags: {},
+        sort: {
+          field: 'event.timestamp',
+          order: 'DESC'
+        },
+        limit: options.size,
+        offset: 0
+      });
 
-    setTimeout(() => {
-      this.setLogs(filteredLogs);
+      this.setLogs(logs.map(log => Mapper.toDomain(log)));
+    } catch (err) {
+      console.error(err);
+    } finally {
       this.setLoading(false);
-    }, 2000);
+    }
   }
 
   @VuexMutation

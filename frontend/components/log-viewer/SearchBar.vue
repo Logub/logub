@@ -3,6 +3,7 @@
     <v-col cols="8">
       <v-text-field
         label="Search in your logs"
+        prepend-inner-icon="mdi-magnify"
         flat
         dense
       />
