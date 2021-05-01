@@ -2,7 +2,6 @@ import { Module, VuexAction, VuexModule, VuexMutation } from 'nuxt-property-deco
 import { LogubLog } from '~/models/LogubLog';
 import { Api } from '~/utils/api';
 import { Mapper } from '~/utils/mapper';
-import { LogubLogDto } from '~/models/dto/LogubLogDto';
 
 @Module({
   name: 'logs',
@@ -23,17 +22,21 @@ export default class Logs extends VuexModule {
   }
 
   @VuexAction
-  async updateLogs(options: { size: number }): Promise<void> {
+  async updateLogs(options: { search?: string; size: number, beginAtInMs: number, endAtInMs: number }): Promise<void> {
     this.setLoading(true);
     try {
+      const { search, size, beginAtInMs, endAtInMs } = options;
       const logs = await Api.searchLogs({
+        text: search,
         businessProperties: {},
         tags: {},
         sort: {
           field: 'event.timestamp',
           order: 'DESC'
         },
-        limit: options.size,
+        endAt: Math.round(beginAtInMs / 1000),
+        beginAt: Math.round(endAtInMs / 1000),
+        limit: size,
         offset: 0
       });
 

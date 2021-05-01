@@ -1,6 +1,7 @@
 import { SystemPropertiesDto } from '~/models/dto/SystemPropertiesDto';
 
 export interface SearchLogsDto {
+  text?: string;
   businessProperties: { [key: string]: object };
   tags: SystemPropertiesDto;
   sort: {

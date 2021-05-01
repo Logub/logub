@@ -1,6 +1,9 @@
 <template>
   <v-container fluid class="logs-container">
-    <search-bar/>
+    <search-bar
+      @on-time-changed="onTimeChanged"
+      @on-search-changed="onSearchChanged"
+    />
     <v-data-table
       dense
       calculate-widths
@@ -45,6 +48,7 @@ import { Moment } from 'moment';
 import moment from 'moment/moment';
 import { LogLevel, logLevelColor } from '~/models/LogLevel';
 import SearchBar from '~/components/log-viewer/SearchBar.vue';
+import { defaultLogDateFilter, LogDateFilter } from '~/models/LogDateFilter';
 
 @Component({
   name: "LogViewer",
@@ -54,6 +58,9 @@ export default class LogViewer extends Vue {
   private pageSize: number = Infinity;
 
   private currentPageSize: number = 50;
+
+  private currentDateRange: LogDateFilter = defaultLogDateFilter;
+  private currentSearch: string = '';
 
   private headers: DataTableHeader[] = [
     {
@@ -111,8 +118,23 @@ export default class LogViewer extends Vue {
     }
   }
 
-  private fetchMoreLogs() {
-    logs.updateLogs({ size: this.currentPageSize });
+  onTimeChanged(newTime: LogDateFilter): void {
+    this.currentDateRange = newTime;
+    this.fetchMoreLogs();
+  }
+
+  onSearchChanged(newSearch: string): void {
+    this.currentSearch = newSearch;
+    this.fetchMoreLogs();
+  }
+
+  private fetchMoreLogs(): void {
+    logs.updateLogs({
+      search: this.currentSearch,
+      size: this.currentPageSize,
+      beginAtInMs: this.currentDateRange.beginAt.getTime(),
+      endAtInMs: this.currentDateRange.endAt.getTime()
+    });
   }
 
   private formatDate(dateNumber: number): string {

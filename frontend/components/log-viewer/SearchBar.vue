@@ -2,6 +2,7 @@
   <v-row id="search-bar" align="center" justify="space-between">
     <v-col cols="8">
       <v-text-field
+        v-model="searchQuery"
         label="Search in your logs"
         prepend-inner-icon="mdi-magnify"
         flat
@@ -23,20 +24,16 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { Component } from 'nuxt-property-decorator';
+import { Component, Emit, Watch } from 'nuxt-property-decorator';
 import moment from 'moment';
-import { LogDateFilter } from '~/models/LogDateFilter';
+import { defaultLogDateFilter, LogDateFilter } from '~/models/LogDateFilter';
 
 @Component({
   name: "SearchBar"
 })
 export default class SearchBar extends Vue {
   private readonly items: LogDateFilter[] = [
-    {
-      text: 'Last 15 minutes',
-      beginAt: moment().toDate(),
-      endAt: moment().subtract(15, "minutes").toDate()
-    },
+    defaultLogDateFilter,
     {
       text: 'Last 30 minutes',
       beginAt: moment().toDate(),
@@ -69,7 +66,28 @@ export default class SearchBar extends Vue {
     }
   ];
 
+  private searchQuery: string = '';
   private selectedDate: LogDateFilter = this.items[0];
+
+  @Watch('searchQuery')
+  onSearchQueryChanged(): void {
+    this.onTimeChanged();
+  }
+
+  @Watch('selectedDate')
+  onSelectedDateChanged(): void {
+    this.onTimeChanged();
+  }
+
+  @Emit()
+  onSearchChanged(): string {
+    return this.searchQuery;
+  }
+
+  @Emit()
+  onTimeChanged(): LogDateFilter {
+    return this.selectedDate;
+  }
 }
 </script>
 <style scoped>
