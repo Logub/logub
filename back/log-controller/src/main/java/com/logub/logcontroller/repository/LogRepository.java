@@ -5,6 +5,7 @@ import com.google.common.collect.Streams;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.logub.logcontroller.domain.model.LogSearch;
 import com.logub.logcontroller.domain.model.LogubSort;
+import com.logub.logcontroller.domain.query.redis.search.QueryBuilder;
 import com.logub.logcontroller.repository.model.RLogubLog;
 import io.redisearch.Document;
 import io.redisearch.Query;
@@ -49,11 +50,11 @@ public class LogRepository {
    * @return the list
    */
   public List<RLogubLog> search(LogSearch logSearch) {
-    String queryString = logSearch.toQuery();
+    QueryBuilder queryString = logSearch.toQuery();
     if(queryString.isBlank()){
-      queryString = "*";
+      queryString.append("*");
     }
-    Query query = new Query(queryString)
+    Query query = new Query(queryString.toRedisQuery())
         .limit(logSearch.getOffset(), logSearch.getLimit());
     if (logSearch.getSort().isPresent()) {
       query.setSortBy(logSearch.getSort().get().getField(),

@@ -2,7 +2,8 @@ package com.logub.logcontroller.domain.model;
 
 import static lombok.AccessLevel.PRIVATE;
 
-import com.logub.logcontroller.api.schema.LogubSortDto;
+import com.logub.logcontroller.domain.query.redis.search.QueryBuilder;
+import com.logub.logcontroller.domain.query.redis.search.QueryBuilders;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.SneakyThrows;
@@ -24,7 +25,7 @@ public class LogSearch {
 
   private Optional<String> text;
   private Optional<SystemProperties> tags;
-  private Map<String, String> businessProperties;
+  private Map<String, List<String>> businessProperties;
   @Builder.Default
   private int limit = 25;
   @Builder.Default
@@ -33,19 +34,16 @@ public class LogSearch {
   private List<LogLevel> levels = Collections.emptyList();
   @Builder.Default
   private Optional<LogubSort> sort = Optional.empty();
-  private String[] toIgnoreChar = {".", "-"};
 
 
   @SneakyThrows
-  public String toQuery() {
-    var query = new StringBuilder();
-    var businessPrefix = "@event.businessProperties";
-    var tagsPrefix = "@event.tags";
-    for (Map.Entry<String, String> properties : businessProperties.entrySet()) {
-      query.append(businessPrefix)
-          .append(".")
-          .append(properties.getKey())
-          .append(":").append("{").append(properties.getValue()).append("} ");
+  public QueryBuilder toQuery() {
+    var query = new QueryBuilder();
+    var businessPrefix = "event.businessProperties.";
+    var tagsPrefix = "event.tags.";
+    for (Map.Entry<String, List<String>> properties : businessProperties.entrySet()) {
+      query.append(QueryBuilders.tag(businessPrefix + properties.getKey(),
+          properties.getValue()));
     }
     if (tags.isPresent()) {
       for (Field declaredField : SystemProperties.class.getDeclaredFields()) {
@@ -53,45 +51,21 @@ public class LogSearch {
             .getDeclaredMethod("get" + StringUtils.capitalize(declaredField.getName()), null);
         Optional<String> value = (Optional<String>) declaredMethod.invoke(tags.get(), null);
         if (value.isPresent()) {
-
-          query.append(tagsPrefix)
-              .append(".")
-              .append(declaredField.getName())
-              .append(":").append("{").append(value.get()).append("} ");
+          query.append(QueryBuilders.tag(tagsPrefix+declaredField.getName(),value.get()));
         }
       }
     }
-    if(!levels.isEmpty()) {
-      query.append(
-          orTag("event.level", levels.stream()
+    if (!levels.isEmpty()) {
+      query.append(QueryBuilders.tag("event.level", levels.stream()
               .map(v -> v.toString()).collect(Collectors.toList())));
     }
 
     text.ifPresent(v -> {
-      v = v.trim();
-      if (v.startsWith("*")) {
-        v = v.substring(1);
-      }
-      if(!v.isBlank()) {
-        query.append(" @event.message:").append(v);
-      }
+      query.append(QueryBuilders.text("event.message", v));
     });
-    String finalQuery = query.toString();
-    for (String forbiddenChar : toIgnoreChar) {
-      finalQuery = finalQuery.replace(forbiddenChar, "\\" + forbiddenChar);
-    }
-    return finalQuery;
+    return query;
   }
 
-  public String orTag(String prefix, List<String> values) {
-    StringBuilder orTagQuery = new StringBuilder().append('@').append(prefix).append(":{");
-    for (int i = 0; i < values.size(); i++) {
-      orTagQuery.append(values.get(i));
-      if (i != values.size() - 1) {
-        orTagQuery.append('|');
-      }
-    }
-    orTagQuery.append("}");
-    return orTagQuery.toString();
-  }
+
+
 }

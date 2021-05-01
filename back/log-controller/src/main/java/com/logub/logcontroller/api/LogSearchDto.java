@@ -23,7 +23,7 @@ public class LogSearchDto {
   private Optional<SystemPropertiesDto> tags = Optional.empty();
 
   @Builder.Default
-  private Map<String, String> businessProperties = Collections.emptyMap();
+  private Map<String, List<String>> businessProperties = Collections.emptyMap();
   @Builder.Default
   private int limit = 25;
   @Builder.Default
