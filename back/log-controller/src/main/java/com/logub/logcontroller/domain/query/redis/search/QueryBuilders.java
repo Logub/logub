@@ -1,5 +1,8 @@
 package com.logub.logcontroller.domain.query.redis.search;
 
+import io.redisearch.Query;
+
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -20,12 +23,12 @@ public class QueryBuilders {
         queryBuilder.append('|');
       }
     }
-    queryBuilder.append("}");
+    queryBuilder.append('}');
     return queryBuilder;
   }
 
   public static QueryBuilder text(String field, String text) {
-    QueryBuilder queryBuilder = new QueryBuilder().append('@').append(field).append(":");
+    QueryBuilder queryBuilder = new QueryBuilder().append('@').append(field).append(':');
     text = text.trim();
     if (text.startsWith("*")) {
       text = text.substring(1);
@@ -34,5 +37,9 @@ public class QueryBuilders {
       queryBuilder.append(text);
     }
     return queryBuilder;
+  }
+
+  public static Query.Filter filterNumeric(String field, Instant beginAt, Instant endAt) {
+    return new Query.NumericFilter(field, beginAt.toEpochMilli(), endAt.toEpochMilli());
   }
 }

@@ -12,6 +12,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +37,11 @@ public class LogSearch {
   private List<LogLevel> levels = Collections.emptyList();
   @Builder.Default
   private Optional<LogubSort> sort = Optional.empty();
+  @Builder.Default
+  private Instant beginAt = Instant.now().minus(15, ChronoUnit.MINUTES);
+  @Builder.Default
+  private Instant endAt = Instant.now();
+
 
 
   @SneakyThrows

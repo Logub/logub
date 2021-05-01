@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -32,4 +34,9 @@ public class LogSearchDto {
   private List<LogLevelDto> levels = Collections.emptyList();
   @Builder.Default
   private Optional<LogubSortDto> sort = Optional.empty();
+  @Builder.Default
+  private Instant beginAt = Instant.now().minus(15, ChronoUnit.MINUTES);
+  @Builder.Default
+  private Instant endAt = Instant.now();
+
 }
