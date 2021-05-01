@@ -4,6 +4,7 @@ import com.logub.logcontroller.api.LogSearchDto;
 import com.logub.logcontroller.api.LogubLogDto;
 import com.logub.logcontroller.domain.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/logs")
+@CrossOrigin(origins = "*")
 public class LogController {
   @Autowired
   private LogService logService;

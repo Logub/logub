@@ -8,6 +8,7 @@ import com.logub.logcontroller.domain.model.schema.BusinessField;
 import com.logub.logcontroller.domain.service.LogSchemaService;
 import com.logub.logcontroller.domain.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,8 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/logs/schema")
-public class LogSchema {
+@CrossOrigin(origins = "*")
+public class LogSchemaController {
   @Autowired
   private LogSchemaService logService;
   @Autowired
