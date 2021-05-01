@@ -69,7 +69,9 @@ public class LogSearch {
     }
 
     text.ifPresent(v -> {
-      query.append(QueryBuilders.text("event.message", v));
+      if(!(v.isEmpty() || v.isBlank())) {
+        query.append(QueryBuilders.text("event.message", v));
+      }
     });
     return query;
   }
