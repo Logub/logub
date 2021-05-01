@@ -71,7 +71,7 @@ export default class SearchBar extends Vue {
 
   @Watch('searchQuery')
   onSearchQueryChanged(): void {
-    this.onTimeChanged();
+    this.onSearchChanged();
   }
 
   @Watch('selectedDate')
