@@ -9,14 +9,17 @@ import java.util.List;
 
 public class QueryBuilders {
 
-  public static QueryBuilder tag(String field, String value) {
-    return tag(field, Collections.singletonList(value));
+  public static QueryBuilder tag(String field, String value, boolean negative) {
+    return tag(field, Collections.singletonList(value), negative);
   }
-  public static QueryBuilder tag(String field, String ... values) {
-    return tag(field, Arrays.asList(values));
+
+  public static QueryBuilder tag(String field, boolean negative, String... values) {
+    return tag(field, Arrays.asList(values), negative);
   }
-  public static QueryBuilder tag(String field, List<String> values) {
-    QueryBuilder queryBuilder = new QueryBuilder().append('@').append(field).append(":{");
+
+  public static QueryBuilder tag(String field, List<String> values, boolean negative) {
+    QueryBuilder queryBuilder =
+        new QueryBuilder().append(fieldToRedisField(field, negative)).append(":{");
     for (int i = 0; i < values.size(); i++) {
       queryBuilder.append(values.get(i));
       if (i != values.size() - 1) {
@@ -27,8 +30,9 @@ public class QueryBuilders {
     return queryBuilder;
   }
 
-  public static QueryBuilder text(String field, String text) {
-    QueryBuilder queryBuilder = new QueryBuilder().append('@').append(field).append(':');
+  public static QueryBuilder text(String field, String text, boolean negative) {
+    QueryBuilder queryBuilder =
+        new QueryBuilder().append(fieldToRedisField(field, negative)).append(':');
     text = text.trim();
     if (text.startsWith("*")) {
       text = text.substring(1);
@@ -41,5 +45,13 @@ public class QueryBuilders {
 
   public static Query.Filter filterNumeric(String field, Instant beginAt, Instant endAt) {
     return new Query.NumericFilter(field, beginAt.toEpochMilli(), endAt.toEpochMilli());
+  }
+
+  private static String fieldToRedisField(String field, boolean negative) {
+    field = '@' + field;
+    if (negative) {
+      field = '-' + field;
+    }
+    return field;
   }
 }

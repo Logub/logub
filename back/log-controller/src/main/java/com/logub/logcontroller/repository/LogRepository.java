@@ -3,7 +3,7 @@ package com.logub.logcontroller.repository;
 import com.google.common.collect.Streams;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.logub.logcontroller.domain.model.LogSearch;
+import com.logub.logcontroller.domain.model.search.LogSearch;
 import com.logub.logcontroller.domain.model.LogubSort;
 import com.logub.logcontroller.domain.query.redis.search.QueryBuilder;
 import com.logub.logcontroller.domain.query.redis.search.QueryBuilders;
@@ -62,9 +62,9 @@ public class LogRepository {
           logSearch.getSort().get().getOrder().equals(
               LogubSort.LogubOrder.ASC));
     } else {
-      query.setSortBy("event.timestamp", false);
+      query.setSortBy("timestamp", false);
     }
-    query.addFilter(QueryBuilders.filterNumeric("event.timestamp",logSearch.getBeginAt(),logSearch.getEndAt()));
+    query.addFilter(QueryBuilders.filterNumeric("timestamp",logSearch.getBeginAt(),logSearch.getEndAt()));
     List<Document> docs = redisSearchClient
         .search(query).docs;
     return docs.stream().map(v -> Streams.stream(v.getProperties())

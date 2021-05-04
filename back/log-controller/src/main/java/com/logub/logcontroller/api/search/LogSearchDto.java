@@ -1,4 +1,6 @@
-package com.logub.logcontroller.api;
+package com.logub.logcontroller.api.search;
+
+import static java.util.Collections.emptyList;
 
 import com.logub.logcontroller.api.schema.LogubSortDto;
 import lombok.AllArgsConstructor;
@@ -10,28 +12,29 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Level;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class LogSearchDto {
-  @Builder.Default
-  private Optional<String> text = Optional.empty();
-  @Builder.Default
-  private Optional<SystemPropertiesDto> tags = Optional.empty();
 
   @Builder.Default
-  private Map<String, List<String>> businessProperties = Collections.emptyMap();
+  private List<LogubFieldSearchDto> texts = emptyList();
+
+  @Builder.Default
+  private List<LogubFieldSearchDto> systemProperties = emptyList();
+
+  @Builder.Default
+  private List<LogubFieldSearchDto> businessProperties = emptyList();
+
   @Builder.Default
   private int limit = 25;
   @Builder.Default
   private int offset = 0;
   @Builder.Default
-  private List<LogLevelDto> levels = Collections.emptyList();
+  private List<LogubFieldSearchDto> levels = Collections.emptyList();
   @Builder.Default
   private Optional<LogubSortDto> sort = Optional.empty();
   @Builder.Default

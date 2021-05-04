@@ -19,7 +19,7 @@ public class LogSchemaService {
   }
 
   public void indexField(BusinessField field) {
-    String fieldName = "event.businessProperties." + field.getName();
+    String fieldName = "businessProperties." + field.getName();
     logSchemaRepository.indexField(fieldName, field.getType().toRedisSearchType());
   }
 }

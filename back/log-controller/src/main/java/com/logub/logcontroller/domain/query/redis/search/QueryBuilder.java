@@ -37,6 +37,7 @@ public class QueryBuilder {
     for (String str : toReplace) {
       finalQuery = finalQuery.replace(str, "\\" + str);
     }
+    finalQuery = finalQuery.replace("\\-@", "-@");
     return finalQuery;
   }
   public boolean isBlank(){

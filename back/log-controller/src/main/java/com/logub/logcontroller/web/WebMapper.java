@@ -1,17 +1,15 @@
 package com.logub.logcontroller.web;
 
-import com.logub.logcontroller.api.LogSearchDto;
+import com.logub.logcontroller.api.search.LogSearchDto;
 import com.logub.logcontroller.api.LogubLogDto;
 import com.logub.logcontroller.api.SystemPropertiesDto;
 import com.logub.logcontroller.api.schema.BusinessFieldDto;
-import com.logub.logcontroller.api.schema.LogubFieldTypeDto;
 import com.logub.logcontroller.api.schema.LogubSortDto;
-import com.logub.logcontroller.domain.model.LogSearch;
+import com.logub.logcontroller.domain.model.search.LogSearch;
 import com.logub.logcontroller.domain.model.LogubLog;
 import com.logub.logcontroller.domain.model.LogubSort;
 import com.logub.logcontroller.domain.model.SystemProperties;
 import com.logub.logcontroller.domain.model.schema.BusinessField;
-import com.logub.logcontroller.domain.model.schema.LogubFieldType;
 import org.mapstruct.Mapper;
 
 import java.util.Optional;

@@ -1,6 +1,6 @@
 package com.logub.logcontroller.web;
 
-import com.logub.logcontroller.api.LogSearchDto;
+import com.logub.logcontroller.api.search.LogSearchDto;
 import com.logub.logcontroller.api.LogubLogDto;
 import com.logub.logcontroller.domain.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;

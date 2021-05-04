@@ -1,7 +1,6 @@
 package com.logub.logcontroller.repository;
 
 import com.logub.logcontroller.domain.model.LogLevel;
-import com.logub.logcontroller.repository.model.RLogEvent;
 import com.logub.logcontroller.repository.model.RLogubLog;
 import com.logub.logcontroller.repository.model.RSystemProperties;
 import io.redisearch.Schema;
@@ -45,19 +44,18 @@ public class LogSchemaRepository {
     String h = INDEX_SCHEMA + ":1";
     if (!redisTemplate.hasKey(h)) {
       Map<String, Object> fields =
-          jackson2HashMapper.toHash(RLogubLog.builder().event(RLogEvent
-              .builder()
+          jackson2HashMapper.toHash(RLogubLog.builder()
               .level(LogLevel.ERROR)
               .message("nothing")
               .service("nothing")
               .timestamp(Instant.now().toEpochMilli())
-              .tags(RSystemProperties.builder()
+              .systemProperties(RSystemProperties.builder()
                   .containerName("nothing")
                   .env("env")
                   .host("host")
                   .imageName("imagename")
                   .build())
-              .build()).build());
+              .build());
       redisTemplate.opsForList().rightPushAll(h, fields.keySet());
     }
     try {
@@ -75,7 +73,7 @@ public class LogSchemaRepository {
           log.info("value already present in schema {}", fieldName);
           continue;
         }
-        if (fieldName.equals("event.message")) {
+        if (fieldName.equals("message")) {
           redisSearchClient
               .alterIndex(new Schema.Field(fieldName, Schema.FieldType.FullText, true));
         } else {
@@ -95,9 +93,9 @@ public class LogSchemaRepository {
   private Schema createSchema() {
     Schema schema = new Schema();
     for (String field : this.getSchema()) {
-      if (field.equals("event.message")) {
+      if (field.equals("message")) {
         schema.addField(new Schema.Field(field, Schema.FieldType.FullText, true));
-      } else if (field.equals("event.timestamp")) {
+      } else if (field.equals("timestamp")) {
         schema.addField(new Schema.Field(field, Schema.FieldType.Numeric, true));
       } else {
         schema.addField(new Schema.Field(field, Schema.FieldType.Tag, true));

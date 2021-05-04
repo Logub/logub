@@ -1,5 +1,6 @@
 package com.logub.logcontroller.repository.model;
 
+import com.logub.logcontroller.domain.model.LogLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +9,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
+import java.time.Instant;
+import java.util.Map;
 import java.util.UUID;
 
 @Data
@@ -22,5 +25,10 @@ public class RLogubLog implements Serializable {
 
   private String index = "principal";
 
-  private RLogEvent event;
+  private String service;
+  private RSystemProperties systemProperties;
+  private Map<String, Object> businessProperties;
+  private String message;
+  private long timestamp = Instant.now().toEpochMilli();
+  private LogLevel level;
 }
