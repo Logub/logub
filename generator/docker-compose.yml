@@ -6,3 +6,6 @@ services:
   python:
     build: ./python
     image: "python-generator:latest"
+  java:
+    build: ./java/log-generator
+    image: "java-generator:latest"
