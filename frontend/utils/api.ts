@@ -9,4 +9,7 @@ export class Api {
   static async searchLogs(searchDto: SearchLogsDto): Promise<LogubLogDto[]> {
     return $axios.$post<LogubLogDto[]>(`${this.API_URL}/logs/search`, searchDto);
   }
+  static async getSchema(): Promise<string[]> {
+    return $axios.$get<string[]>(`${this.API_URL}/logs/schema`);
+  }
 }
