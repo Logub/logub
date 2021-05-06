@@ -10,27 +10,17 @@ services:
       driver: "fluentd"
       options:
         fluentd-address: localhost:24224
-        tag: httpd.access
-  golang:
-    build: ../generator/golang
-    image: "golang-generator:latest"
+        tag: app.httpd.access
+  spring-app:
+    build: ../generator/java/log-generator
+    image: "java-generator:latest"
     links:
       - fluentd
     logging:
       driver: "fluentd"
       options:
         fluentd-address: localhost:24224
-        tag: go.generator
-  python:
-    build: ../generator/python
-    image: "python-generator:latest"
-    links:
-      - fluentd
-    logging:
-      driver: "fluentd"
-      options:
-        fluentd-address: localhost:24224
-        tag: python.generator
+        tag: app.spring.log
   fluentd:
     build: ./fluentd
     volumes:
