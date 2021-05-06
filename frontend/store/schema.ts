@@ -20,6 +20,16 @@ export default class Schema extends VuexModule {
   get schema(): string[] {
     return this._schema;
   }
+  public getBusinessProperties(): string[] {
+    return  this.schema.filter(v => v.startsWith("businessProperties."))
+      .map(v => v.replace('businessProperties.', ''));
+  }
+
+
+  public getSystemProperties(): string[] {
+    return this.schema.filter(v => v.startsWith("systemProperties."))
+      .map(v => v.replace('systemProperties.', ''));
+  }
 
   @VuexAction
   async updateSchema(): Promise<void> {

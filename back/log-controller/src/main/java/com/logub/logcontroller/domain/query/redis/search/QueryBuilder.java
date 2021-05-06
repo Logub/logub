@@ -16,10 +16,12 @@ public class QueryBuilder {
   }
 
   public QueryBuilder append(QueryBuilder query) {
+
+    String queryString = '('+query.getQuery().toString()+')';
     if(this.query.length() == 0){
-      return this.append(query.getQuery().toString());
+      return this.append(queryString);
     }
-    return this.append(" ").append(query.getQuery().toString());
+    return this.append(" ").append(queryString);
   }
 
   public QueryBuilder append(String query) {

@@ -115,16 +115,12 @@ export default class SearchBar extends Vue {
       console.log(m)
       m.forEach((match, groupIndex) => {
         if (groupIndex == 0) {
-          console.log(`Found match, group ${groupIndex}: ${match}`);
           matchArray.push(match);
         }
       });
     }
 
     let str = this.searchQuery.replace(textInQuoteRegex, '');
-    console.log(str);
-
-    console.log(matchArray);
     while ((m = regex.exec(str)) !== null) {
       // This is necessary to avoid infinite loops with zero-width matches
       if (m.index === regex.lastIndex) {
@@ -133,11 +129,9 @@ export default class SearchBar extends Vue {
 
       // The result can be accessed through the `m`-variable.
       m.forEach((match, groupIndex) => {
-        console.log(`Found match, group ${groupIndex}: ${match}`);
         matchArray.push(match)
       });
     }
-    console.log(matchArray);
     matchArray.forEach(v => {
       this.matchingQuery.add(v);
     });
@@ -164,6 +158,8 @@ export default class SearchBar extends Vue {
   public getSchema() {
     return schema.schema;
   }
+
+
 
   @Emit()
   onTimeChanged(): LogDateFilter {
