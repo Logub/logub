@@ -144,7 +144,7 @@ export default class SearchBar extends Vue {
 
     this.searchQuery = "";
 
-    return "NOT MATCHING NEW MODEL";
+    return "";
   }
 
   mounted() {
