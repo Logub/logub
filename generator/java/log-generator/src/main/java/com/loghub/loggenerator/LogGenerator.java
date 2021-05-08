@@ -16,7 +16,7 @@ public class LogGenerator {
   @Autowired
   private QuoteGeneratorService quoteGeneratorService;
 
- // @Scheduled(fixedDelay = 1)
+  @Scheduled(fixedDelay = 1)
   public void generateLog(){
 
     MDC.put("test", "test");
