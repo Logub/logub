@@ -2,6 +2,7 @@ package com.loghub.loggenerator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -26,6 +27,8 @@ public class LogGeneratorApplication {
 		SpringApplication.run(LogGeneratorApplication.class, args);
 
 		Logger logger = LoggerFactory.getLogger(LogGeneratorApplication.class);
+		MDC.put("businessProperties.test", "test");
+		MDC.put("businessProperties.businessValue", "notest");
 
 		while (true) {
 			String generatedString = generateRandomString(50);
