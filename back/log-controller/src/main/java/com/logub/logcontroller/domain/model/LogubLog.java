@@ -35,6 +35,16 @@ public class LogubLog {
   @Builder.Default
   private Instant timestamp = Instant.now();
 
+  @Builder.Default
+  private Optional<String>  service = Optional.empty();
+
+  @Builder.Default
+  private Optional<String> logger = Optional.empty();
+
+  @Builder.Default
+  private Optional<String> thread = Optional.empty();
+  @Builder.Default
+  private Optional<String> source = Optional.empty();
   @NonNull
   private LogLevel level;
 }

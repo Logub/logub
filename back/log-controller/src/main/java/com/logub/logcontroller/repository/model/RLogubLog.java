@@ -30,5 +30,12 @@ public class RLogubLog implements Serializable {
   private String message;
   @Builder.Default
   private long timestamp = Instant.now().toEpochMilli();
+
+  private String service;
+
+  private String logger;
+
+  private String thread;
+  private String source;
   private LogLevel level;
 }

@@ -15,9 +15,6 @@ import java.util.Optional;
 public class RSystemProperties implements Serializable {
   private String imageName;
   private String containerName;
-  private String service;
   private String env;
   private String host;
-  private String logger;
-  private String thread;
 }

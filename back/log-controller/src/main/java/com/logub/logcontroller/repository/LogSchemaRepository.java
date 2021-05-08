@@ -55,10 +55,12 @@ public class LogSchemaRepository {
                 .env("env")
                 .host("host")
                 .imageName("imagename")
-                .logger("logger")
-                .thread("thread")
-                .service("service")
+                .containerName("unknow")
                 .build())
+            .thread("1")
+            .service("app")
+            .logger("logger")
+            .source("stdout")
             .build());
     Set<String> systemField = fields.keySet();
     schemeSet.forEach(systemField::remove);

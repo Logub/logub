@@ -18,6 +18,7 @@
 		<logback.version>1.2.3</logback.version>
 		<logback.contrib.version>0.1.5</logback.contrib.version>
 		<log4j.version>2.14.1</log4j.version>
+		<logstash.version>6.6</logstash.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -58,6 +59,11 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>${logstash.version}</version>
 		</dependency>
 
 	</dependencies>

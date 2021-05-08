@@ -24,12 +24,4 @@ public class SystemPropertiesDto {
   @Builder.Default
   private Optional<String> host = Optional.empty();
 
-  @Builder.Default
-  private Optional<String> logger = Optional.empty();
-
-  @Builder.Default
-  private Optional<String> thread = Optional.empty();
-
-  @Builder.Default
-  private Optional<String>  service = Optional.empty();
 }

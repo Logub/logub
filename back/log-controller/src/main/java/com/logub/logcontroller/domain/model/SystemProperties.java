@@ -24,13 +24,5 @@ public class SystemProperties {
  @Builder.Default
  Optional<String>  host= Optional.empty();
 
- @Builder.Default
- Optional<String>  service = Optional.empty();
-
- @Builder.Default
- Optional<String>  logger = Optional.empty();
-
- @Builder.Default
- Optional<String>  thread = Optional.empty();
 
 }
