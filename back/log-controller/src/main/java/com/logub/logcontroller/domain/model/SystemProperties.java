@@ -19,11 +19,18 @@ public class SystemProperties {
  Optional<String>  containerName= Optional.empty();
 
  @Builder.Default
- Optional<String>  service= Optional.empty();
-
- @Builder.Default
  Optional<String>  env= Optional.empty();
 
  @Builder.Default
  Optional<String>  host= Optional.empty();
+
+ @Builder.Default
+ Optional<String>  service = Optional.empty();
+
+ @Builder.Default
+ Optional<String>  logger = Optional.empty();
+
+ @Builder.Default
+ Optional<String>  thread = Optional.empty();
+
 }

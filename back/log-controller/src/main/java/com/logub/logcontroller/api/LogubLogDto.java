@@ -20,7 +20,6 @@ public class LogubLogDto {
   private String id = UUID.randomUUID().toString();
 
   private String index = "principal";
-  private String service;
   private SystemProperties systemProperties;
   private Map<String, Object> businessProperties;
   private Optional<String> message = Optional.empty();

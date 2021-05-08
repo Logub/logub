@@ -14,8 +14,10 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -42,21 +44,28 @@ public class LogSchemaRepository {
   @PostConstruct
   public void initSchema() {
     String h = INDEX_SCHEMA + ":1";
-    if (!redisTemplate.hasKey(h)) {
-      Map<String, Object> fields =
-          jackson2HashMapper.toHash(RLogubLog.builder()
-              .level(LogLevel.ERROR)
-              .message("nothing")
-              .service("nothing")
-              .timestamp(Instant.now().toEpochMilli())
-              .systemProperties(RSystemProperties.builder()
-                  .containerName("nothing")
-                  .env("env")
-                  .host("host")
-                  .imageName("imagename")
-                  .build())
-              .build());
-      redisTemplate.opsForList().rightPushAll(h, fields.keySet());
+    List<String> schemeSet = redisTemplate.hasKey(h) ? getSchema() : Collections.emptyList();
+    Map<String, Object> fields =
+        jackson2HashMapper.toHash(RLogubLog.builder()
+            .level(LogLevel.ERROR)
+            .message("nothing")
+            .timestamp(Instant.now().toEpochMilli())
+            .systemProperties(RSystemProperties.builder()
+                .containerName("nothing")
+                .env("env")
+                .host("host")
+                .imageName("imagename")
+                .logger("logger")
+                .thread("thread")
+                .service("service")
+                .build())
+            .build());
+    Set<String> systemField = fields.keySet();
+    schemeSet.forEach(systemField::remove);
+    log.info("new fields : {}", systemField);
+    if (!systemField.isEmpty()) {
+      redisTemplate.opsForList()
+          .rightPushAll(h, new ArrayList<>(systemField));
     }
     try {
       redisSearchClient = new Client(INDEX_LOG, adresse, port);
@@ -77,6 +86,7 @@ public class LogSchemaRepository {
           redisSearchClient
               .alterIndex(new Schema.Field(fieldName, Schema.FieldType.FullText, true));
         } else {
+          log.info("new global properties detected {}", fieldName);
           redisSearchClient.alterIndex(new Schema.Field(fieldName, Schema.FieldType.Tag, true));
         }
       }
@@ -85,7 +95,7 @@ public class LogSchemaRepository {
 
   public void indexField(String fieldName, Schema.FieldType fieldType) {
     redisSearchClient.alterIndex(new Schema.Field(fieldName, fieldType, true));
-    redisTemplate.opsForList().rightPush(INDEX_SCHEMA+":1",fieldName);
+    redisTemplate.opsForList().rightPush(INDEX_SCHEMA + ":1", fieldName);
 
   }
 

@@ -13,9 +13,11 @@ import java.util.Optional;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class RSystemProperties implements Serializable {
- private String imageName;
- private String  containerName;
- private String  service;
- private String  env;
- private String  host;
+  private String imageName;
+  private String containerName;
+  private String service;
+  private String env;
+  private String host;
+  private String logger;
+  private String thread;
 }

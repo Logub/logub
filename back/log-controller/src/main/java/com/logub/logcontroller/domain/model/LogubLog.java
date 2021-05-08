@@ -23,17 +23,18 @@ public class LogubLog {
   @Builder.Default
   private String index = "principal";
 
-
-  @NonNull
-  private String service;
   @NonNull
   private SystemProperties systemProperties;
+
   @Builder.Default
   private Map<String, Object> businessProperties = Collections.emptyMap();
+
   @Builder.Default
   private Optional<String> message = Optional.empty();
+
   @Builder.Default
   private Instant timestamp = Instant.now();
+
   @NonNull
   private LogLevel level;
 }

@@ -19,16 +19,16 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 @RedisHash("log")
 public class RLogubLog implements Serializable {
-  @Builder.Default
   @Id
+  @Builder.Default
   private String id = UUID.randomUUID().toString();
 
   private String index = "principal";
 
-  private String service;
   private RSystemProperties systemProperties;
   private Map<String, Object> businessProperties;
   private String message;
+  @Builder.Default
   private long timestamp = Instant.now().toEpochMilli();
   private LogLevel level;
 }
