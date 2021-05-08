@@ -3,6 +3,7 @@ import { LogubLog } from '~/models/LogubLog';
 import { Api } from '~/utils/api';
 import { Mapper } from '~/utils/mapper';
 import { FieldTypeDto } from '~/models/dto/FieldSearchDto';
+import { sleep } from '~/utils/helpers';
 
 @Module({
   name: 'logs',
@@ -27,7 +28,7 @@ export default class Logs extends VuexModule {
     this.setLoading(true);
     try {
       const { search, size, beginAtInMs, endAtInMs } = options;
-      const logs = await Api.searchLogs({
+      const logsPromise = Api.searchLogs({
         texts: search ? [{
           name: '',
           type: FieldTypeDto.FullText,
@@ -46,6 +47,8 @@ export default class Logs extends VuexModule {
         offset: 0
       });
 
+      const all = await Promise.all([logsPromise, sleep(500)]);
+      const logs = all[0];
       this.setLogs(logs.map(log => Mapper.toDomain(log)));
     } catch (err) {
       console.error(err);

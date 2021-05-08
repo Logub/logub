@@ -6,8 +6,11 @@ export interface LogubLog {
   index: string;
   timestamp: number;
   level: LogLevel;
-  service: string;
+  service?: string;
   tags: SystemProperties;
   businessProperties: { [key: string]: object };
   message?: string;
+  logger?: string;
+  thread?: string;
+  source?: string;
 }

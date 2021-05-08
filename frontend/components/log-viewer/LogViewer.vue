@@ -14,6 +14,7 @@
       no-data-text="No logs found here"
       item-key="id"
       class="rounded-0 logs-table mb-15"
+      @click:row="onRowClicked"
     >
       <template v-slot:footer="{ options }">
         <v-progress-linear
@@ -33,10 +34,11 @@
             }
           }">
           <span style="display: none">{{ index }}</span>
-          {{ formatDate(value) }}
+          {{ format(value) }}
         </span>
       </template>
     </v-data-table>
+    <log-detail v-if="selectedLog" v-model="dialogOpen" :log="selectedLog"/>
   </v-container>
 </template>
 <script lang="ts">
@@ -44,11 +46,11 @@ import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import { DataTableHeader } from 'vuetify';
 import { logs } from '~/utils/store-accessor';
-import { Moment } from 'moment';
-import moment from 'moment/moment';
 import { LogLevel, logLevelColor } from '~/models/LogLevel';
 import SearchBar from '~/components/log-viewer/SearchBar.vue';
 import { defaultLogDateFilter, LogDateFilter } from '~/models/LogDateFilter';
+import { formatDate } from '~/utils/helpers';
+import { LogubLog } from '~/models/LogubLog';
 
 @Component({
   name: "LogViewer",
@@ -58,6 +60,8 @@ export default class LogViewer extends Vue {
   private pageSize: number = Infinity;
 
   private currentPageSize: number = 50;
+  private dialogOpen: boolean = false;
+  private selectedLog: LogubLog = null;
 
   private currentDateRange: LogDateFilter = defaultLogDateFilter;
   private currentSearch: string = '';
@@ -128,6 +132,11 @@ export default class LogViewer extends Vue {
     this.fetchMoreLogs();
   }
 
+  onRowClicked(item: LogubLog): void {
+    this.selectedLog = item;
+    this.dialogOpen = true;
+  }
+
   private fetchMoreLogs(): void {
     logs.updateLogs({
       search: this.currentSearch,
@@ -137,9 +146,8 @@ export default class LogViewer extends Vue {
     });
   }
 
-  private formatDate(dateNumber: number): string {
-    const date: Moment = moment(dateNumber);
-    return date.format('MMM DD HH:mm:ss.SSS');
+  private format(dateNumber: number): string {
+    return formatDate(dateNumber);
   }
 }
 </script>
