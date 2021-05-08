@@ -2,6 +2,7 @@ import { Module, VuexAction, VuexModule, VuexMutation } from 'nuxt-property-deco
 import { LogubLog } from '~/models/LogubLog';
 import { Api } from '~/utils/api';
 import { Mapper } from '~/utils/mapper';
+import { FieldTypeDto } from '~/models/dto/FieldSearchDto';
 
 @Module({
   name: 'logs',
@@ -27,11 +28,16 @@ export default class Logs extends VuexModule {
     try {
       const { search, size, beginAtInMs, endAtInMs } = options;
       const logs = await Api.searchLogs({
-        text: search,
-        businessProperties: {},
-        tags: {},
+        texts: search ? [{
+          name: '',
+          type: FieldTypeDto.FullText,
+          values: [ search ],
+          negation: false
+        }] : [],
+        businessProperties: [],
+        systemProperties: [],
         sort: {
-          field: 'event.timestamp',
+          field: 'timestamp',
           order: 'DESC'
         },
         endAt: Math.round(beginAtInMs / 1000),

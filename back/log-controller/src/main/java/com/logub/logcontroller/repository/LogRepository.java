@@ -3,8 +3,8 @@ package com.logub.logcontroller.repository;
 import com.google.common.collect.Streams;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.logub.logcontroller.domain.model.search.LogSearch;
 import com.logub.logcontroller.domain.model.LogubSort;
+import com.logub.logcontroller.domain.model.search.LogSearch;
 import com.logub.logcontroller.domain.query.redis.search.QueryBuilder;
 import com.logub.logcontroller.domain.query.redis.search.QueryBuilders;
 import com.logub.logcontroller.repository.model.RLogubLog;
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import javax.annotation.PostConstruct;
 
 @Repository
@@ -52,11 +51,13 @@ public class LogRepository {
    */
   public List<RLogubLog> search(LogSearch logSearch) {
     QueryBuilder queryString = logSearch.toQuery();
-    if(queryString.isBlank()){
-      queryString.append("*");
+    Query query;
+    if (queryString.isBlank()) {
+      query = new Query("*").limit(logSearch.getOffset(), logSearch.getLimit());
+    } else {
+      query = new Query(queryString.toRedisQuery())
+          .limit(logSearch.getOffset(), logSearch.getLimit());
     }
-    Query query = new Query(queryString.toRedisQuery())
-        .limit(logSearch.getOffset(), logSearch.getLimit());
     if (logSearch.getSort().isPresent()) {
       query.setSortBy(logSearch.getSort().get().getField(),
           logSearch.getSort().get().getOrder().equals(
@@ -64,7 +65,8 @@ public class LogRepository {
     } else {
       query.setSortBy("timestamp", false);
     }
-    query.addFilter(QueryBuilders.filterNumeric("timestamp",logSearch.getBeginAt(),logSearch.getEndAt()));
+    query.addFilter(
+        QueryBuilders.filterNumeric("timestamp", logSearch.getBeginAt(), logSearch.getEndAt()));
     List<Document> docs = redisSearchClient
         .search(query).docs;
     return docs.stream().map(v -> Streams.stream(v.getProperties())

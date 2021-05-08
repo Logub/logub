@@ -6,14 +6,14 @@ import { LogLevel } from '~/models/LogLevel';
 export class Mapper {
 
   static toDomain(dto: LogubLogDto): LogubLog {
-    const { timestamp, businessProperties, level, message, service, tags } = dto.event;
+    const { timestamp, businessProperties, level, message, service, systemProperties } = dto;
     return {
       id: dto.id,
       index: dto.index,
       timestamp: moment(timestamp).toDate().getTime(),
       level: LogLevel[level as keyof typeof LogLevel],
       message: message,
-      tags: tags,
+      tags: systemProperties,
       service: service,
       businessProperties: businessProperties
     };

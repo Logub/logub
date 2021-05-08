@@ -1,4 +1,4 @@
-enum FieldTypeDto {
+export enum FieldTypeDto {
   Tag,
   FullText,
   Geo,

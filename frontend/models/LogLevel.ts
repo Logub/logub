@@ -2,7 +2,8 @@ export enum LogLevel {
   INFO = 'INFO',
   WARN = 'WARN',
   ERROR = 'ERROR',
-  DEBUG = 'DEBUG'
+  DEBUG = 'DEBUG',
+  FATAL = 'FATAL'
 }
 
 export function logLevelColor(logLevel: LogLevel): string {
@@ -15,6 +16,8 @@ export function logLevelColor(logLevel: LogLevel): string {
       return "#C72000";
     case LogLevel.DEBUG:
       return "#A896C7";
+    case LogLevel.FATAL:
+      return "#520000";
     default:
       return "#FFF";
   }

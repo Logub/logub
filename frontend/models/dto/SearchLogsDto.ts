@@ -1,9 +1,9 @@
-import { SystemPropertiesDto } from '~/models/dto/SystemPropertiesDto';
+import { FieldSearchDto } from '~/models/dto/FieldSearchDto';
 
 export interface SearchLogsDto {
-  text?: string;
-  businessProperties: { [key: string]: object };
-  tags: SystemPropertiesDto;
+  texts?: Array<FieldSearchDto>;
+  businessProperties: Array<FieldSearchDto>;
+  systemProperties: Array<FieldSearchDto>;
   sort: {
     field?: string;
     order?: 'ASC' | 'DESC'

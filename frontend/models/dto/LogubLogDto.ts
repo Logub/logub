@@ -1,7 +1,12 @@
-import { EventLogDto } from '~/models/dto/EventLogDto';
+import { SystemPropertiesDto } from '~/models/dto/SystemPropertiesDto';
 
 export interface LogubLogDto {
   id: string;
   index: string;
-  event: EventLogDto;
+  service: string;
+  systemProperties: SystemPropertiesDto;
+  businessProperties: { [key: string]: object };
+  message: string;
+  timestamp: string;
+  level: string;
 }
