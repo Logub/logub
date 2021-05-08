@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  golang:
+    build: ./golang
+    image: "golang-generator:latest"
+  python:
+    build: ./python
+    image: "python-generator:latest"
+  java:
+    build: ./java/log-generator
+    image: "java-generator:latest"
