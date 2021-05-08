@@ -1,0 +1,11 @@
+{
+  "NavigationLogubDrawer": {
+    "description": "Auto imported from components/navigation/LogubDrawer.vue"
+  },
+  "LogViewer": {
+    "description": "Auto imported from components/log-viewer/LogViewer.vue"
+  },
+  "LogViewerSearchBar": {
+    "description": "Auto imported from components/log-viewer/SearchBar.vue"
+  }
+}
