@@ -17,4 +17,5 @@ public class RSystemProperties implements Serializable {
   private String containerName;
   private String env;
   private String host;
+  private String containerId;
 }

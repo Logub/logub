@@ -6,11 +6,16 @@ export interface LogubLog {
   index: string;
   timestamp: number;
   level: LogLevel;
-  service?: string;
   tags: SystemProperties;
   businessProperties: { [key: string]: object };
+  service?: string;
   message?: string;
   logger?: string;
   thread?: string;
   source?: string;
+}
+
+
+export function basicProperties(): Set<string>{
+  return new Set(['service','message', 'logger', 'thread', 'source' ])
 }

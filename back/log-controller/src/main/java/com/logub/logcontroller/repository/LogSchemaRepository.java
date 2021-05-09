@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -56,6 +57,7 @@ public class LogSchemaRepository {
                 .host("host")
                 .imageName("imagename")
                 .containerName("unknow")
+                .containerId("ZZZ")
                 .build())
             .thread("1")
             .service("app")
@@ -75,21 +77,21 @@ public class LogSchemaRepository {
       redisSearchClient.createIndex(schema, Client.IndexOptions.defaultOptions());
     } catch (Exception exception) {
       log.warn("createClientAndSchema", exception);
-      ArrayList<ArrayList<byte[]>> info =
-          ((ArrayList<ArrayList<byte[]>>) redisSearchClient.getInfo().get("fields"));
-      for (ArrayList<byte[]> bytes : info) {
-        List<String> schema = this.getSchema();
-        String fieldName = new String(bytes.get(0));
-        if (schema.stream().anyMatch(v -> v.equals(fieldName))) {
-          log.info("value already present in schema {}", fieldName);
+      List<String> info =
+          ((ArrayList<ArrayList<byte[]>>) redisSearchClient.getInfo().get("fields"))
+              .stream().filter(v -> !v.isEmpty()).map(v -> new String(v.get(0))).collect(
+              Collectors.toList());
+      for (String field : this.getSchema()) {
+        if (info.stream().anyMatch(v -> v.equals(field))) {
+          log.info("value already present in schema {}", field);
           continue;
         }
-        if (fieldName.equals("message")) {
+        if (field.equals("message")) {
           redisSearchClient
-              .alterIndex(new Schema.Field(fieldName, Schema.FieldType.FullText, true));
+              .alterIndex(new Schema.Field(field, Schema.FieldType.FullText, true));
         } else {
-          log.info("new global properties detected {}", fieldName);
-          redisSearchClient.alterIndex(new Schema.Field(fieldName, Schema.FieldType.Tag, true));
+          log.info("new global properties detected {}", field);
+          redisSearchClient.alterIndex(new Schema.Field(field, Schema.FieldType.Tag, true));
         }
       }
     }

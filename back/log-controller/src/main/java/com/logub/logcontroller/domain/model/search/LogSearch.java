@@ -36,6 +36,10 @@ public class LogSearch {
   private List<LogubFieldSearch> systemProperties = emptyList();
   @Builder.Default
   private List<LogubFieldSearch> businessProperties = emptyList();
+
+  @Builder.Default
+  private List<LogubFieldSearch> basicProperties = emptyList();
+
   @Builder.Default
   private List<LogubFieldSearch> levels = Collections.emptyList();
   @Builder.Default
@@ -62,6 +66,11 @@ public class LogSearch {
     for (LogubFieldSearch properties : systemProperties) {
       query.append(QueryBuilders
           .tag(systemPropertiesPrefix + properties.getName(), properties.getValues(),
+              properties.isNegation()));
+    }
+    for (LogubFieldSearch properties : basicProperties) {
+      query.append(QueryBuilders
+          .tag(properties.getName(), properties.getValues(),
               properties.isNegation()));
     }
     if (!levels.isEmpty()) {

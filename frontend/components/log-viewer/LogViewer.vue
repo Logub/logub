@@ -51,6 +51,7 @@ import SearchBar from '~/components/log-viewer/SearchBar.vue';
 import { defaultLogDateFilter, LogDateFilter } from '~/models/LogDateFilter';
 import { formatDate } from '~/utils/helpers';
 import { LogubLog } from '~/models/LogubLog';
+import {FieldSearchDto, FieldTypeDto} from "~/models/dto/FieldSearchDto";
 
 @Component({
   name: "LogViewer",
@@ -64,7 +65,7 @@ export default class LogViewer extends Vue {
   private selectedLog: LogubLog = null;
 
   private currentDateRange: LogDateFilter = defaultLogDateFilter;
-  private currentSearch: string = '';
+  private currentSearch: Array<FieldSearchDto> = [];
 
   private headers: DataTableHeader[] = [
     {
@@ -127,7 +128,7 @@ export default class LogViewer extends Vue {
     this.fetchMoreLogs();
   }
 
-  onSearchChanged(newSearch: string): void {
+  onSearchChanged(newSearch: Array<FieldSearchDto>): void {
     this.currentSearch = newSearch;
     this.fetchMoreLogs();
   }
@@ -139,7 +140,7 @@ export default class LogViewer extends Vue {
 
   private fetchMoreLogs(): void {
     logs.updateLogs({
-      search: this.currentSearch,
+      properties: this.currentSearch,
       size: this.currentPageSize,
       beginAtInMs: this.currentDateRange.beginAt.getTime(),
       endAtInMs: this.currentDateRange.endAt.getTime()

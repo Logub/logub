@@ -1,5 +1,5 @@
 import { Module, VuexAction, VuexModule, VuexMutation } from 'nuxt-property-decorator';
-import { LogubLog } from '~/models/LogubLog';
+import {basicProperties, LogubLog} from '~/models/LogubLog';
 import { Api } from '~/utils/api';
 import { Mapper } from '~/utils/mapper';
 
@@ -16,19 +16,24 @@ export default class Schema extends VuexModule {
   }
 
   private _schema: string[] = [];
-
+  private _basicProperties: Set<string> = basicProperties();
   get schema(): string[] {
     return this._schema;
   }
 
-  public getBusinessProperties(): string[] {
+  get businessProperties(): string[] {
     return this.schema.filter(v => v.startsWith("businessProperties."))
       .map(v => v.replace('businessProperties.', ''));
   }
 
-  public getSystemProperties(): string[] {
+  get systemProperties(): string[] {
     return this.schema.filter(v => v.startsWith("systemProperties."))
       .map(v => v.replace('systemProperties.', ''));
+  }
+
+  get basicProperties(): Set<string> {
+    console.log(this._basicProperties)
+    return this._basicProperties;
   }
 
   @VuexAction

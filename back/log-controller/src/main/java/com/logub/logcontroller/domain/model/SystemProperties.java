@@ -17,6 +17,8 @@ public class SystemProperties {
 
  @Builder.Default
  Optional<String>  containerName= Optional.empty();
+ @Builder.Default
+ Optional<String>  containerId= Optional.empty();
 
  @Builder.Default
  Optional<String>  env= Optional.empty();

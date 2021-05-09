@@ -24,4 +24,6 @@ public class SystemPropertiesDto {
   @Builder.Default
   private Optional<String> host = Optional.empty();
 
+  @Builder.Default
+  Optional<String>  containerId= Optional.empty();
 }

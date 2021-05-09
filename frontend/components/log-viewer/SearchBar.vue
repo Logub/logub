@@ -4,7 +4,7 @@
       <v-col cols="8">
         <v-text-field
           v-model="searchQuery"
-          @keydown.enter="onSearchChanged()"
+          @keydown.enter="searchTextUpdate()"
           label="Search in your logs"
           prepend-inner-icon="mdi-magnify"
           flat
@@ -31,11 +31,15 @@
         >
           <v-chip
             v-for="(tag,index) in matchingQuery"
-            :key="tag"
+            :key="index"
             :close="true"
-            @click:close="onDeleteChips(tag)"
+            :color="typeColor(tag.type)"
+            style="color: white!important;"
+            @click:close="onDeleteChips(index)"
           >
-            {{ tag }}
+            {{
+              formatChip(tag)
+            }}
           </v-chip>
         </v-chip-group>
       </v-col>
@@ -47,7 +51,8 @@ import Vue from 'vue';
 import {Component, Emit, Watch} from 'nuxt-property-decorator';
 import moment from 'moment';
 import {defaultLogDateFilter, LogDateFilter} from '~/models/LogDateFilter';
-import {schema} from '~/utils/store-accessor';
+import {FieldSearchDto, FieldTypeDto} from "~/models/dto/FieldSearchDto";
+import {LogubLog} from "~/models/LogubLog";
 
 @Component({
   name: "SearchBar"
@@ -90,22 +95,18 @@ export default class SearchBar extends Vue {
 
   private searchQuery: string = '';
   private selectedDate: LogDateFilter = this.items[0];
-  private matchingQuery: Set<String> = new Set<String>();
-
-
+  private matchingQuery: Array<FieldSearchDto> = [];
   @Watch('selectedDate')
   onSelectedDateChanged(): void {
     this.onTimeChanged();
   }
 
-  @Emit()
   //TODO fulltext search bug "test env:dev test2" will search => "test test2" and not "test" "test2"
-  onSearchChanged(): string {
-    console.log(this.getSchema())
+  searchTextUpdate() {
     const regex = /\S+:\S+/gm;
-    const matchArray: string[] = [];
     let m;
     const textInQuoteRegex = /(["'])(?:\\.|[^\\])*?\1/gm
+
     while ((m = textInQuoteRegex.exec(this.searchQuery)) !== null) {
       // This is necessary to avoid infinite loops with zero-width matches
       if (m.index === regex.lastIndex) {
@@ -115,7 +116,7 @@ export default class SearchBar extends Vue {
       console.log(m)
       m.forEach((match, groupIndex) => {
         if (groupIndex == 0) {
-          matchArray.push(match);
+          this.addToMatchingQuery(this.stringToFieldTextSearch(match));
         }
       });
     }
@@ -129,36 +130,59 @@ export default class SearchBar extends Vue {
 
       // The result can be accessed through the `m`-variable.
       m.forEach((match, groupIndex) => {
-        matchArray.push(match)
+        this.addToMatchingQuery(this.stringToFieldTagSearch(match));
       });
     }
-    matchArray.forEach(v => {
-      this.matchingQuery.add(v);
-    });
+
 
     const value = this.searchQuery.replace(regex, '').trim();
 
     if (!this.isBlank(value)) {
-      this.matchingQuery.add(value);
+      this.addToMatchingQuery(this.stringToFieldTextSearch(value));
     }
 
     this.searchQuery = "";
-
-    return "";
+    this.onSearchChanged();
   }
 
-  mounted() {
-    this.updateSchema();
+  @Emit()
+  onSearchChanged(): Array<FieldSearchDto> {
+    return this.matchingQuery;
   }
 
-  public updateSchema() {
-    return schema.updateSchema();
+  addToMatchingQuery(v: FieldSearchDto) {
+    const match = this.matchingQuery.find(value => value.name === v.name && v.type === value.type);
+    if (match) {
+      for (let payload of v.values) {
+        if(!match.values.includes(payload)){
+          match.values.push(payload);
+        }
+      }
+    } else {
+      this.matchingQuery.push(v);
+    }
   }
 
-  public getSchema() {
-    return schema.schema;
-  }
+  stringToFieldTextSearch(v: string): FieldSearchDto {
+    return {
+      name: "message",
+      type: FieldTypeDto.FullText,
+      values: [v],
+      negation: v.startsWith("-"),
+    }
+  };
 
+  stringToFieldTagSearch(v: string): FieldSearchDto {
+
+    const tag = v.split(':');
+    console.log(tag);
+    return {
+      name: tag[0].replace('-', ''),
+      type: FieldTypeDto.Tag,
+      values: [tag[1]],
+      negation: tag[0].startsWith("-"),
+    }
+  };
 
 
   @Emit()
@@ -166,15 +190,38 @@ export default class SearchBar extends Vue {
     return this.selectedDate;
   }
 
-  onDeleteChips(index: string) {
-    console.log(index);
-    this.matchingQuery.delete(index);
-    this.$forceUpdate();
+  onDeleteChips(index: number) {
+    this.matchingQuery.splice(index, 1);
+    this.onSearchChanged();
   }
 
   isBlank(str: string) {
     return (!str || /^\s*$/.test(str));
   }
+
+  formatChip(field: FieldSearchDto): string {
+    const multiple = field.values.length > 1;
+    switch (field.type) {
+      case FieldTypeDto.FullText:
+        return `message:${multiple ? '(' : ''}${field.values.join(" AND ")}${multiple ? ')' : ''}`
+      case FieldTypeDto.Tag:
+        return `${field.name}:${multiple ? '(' : ''}${field.values.join(" OR ")}${multiple ? ')' : ''}`
+      default:
+        throw new Error("unsupported")
+    }
+  }
+
+  typeColor(type: FieldTypeDto): string {
+    switch (type) {
+      case FieldTypeDto.FullText:
+        return "#fb8500";
+      case FieldTypeDto.Numeric:
+        return "#023047";
+      case FieldTypeDto.Tag:
+        return "#219ebc";
+      case FieldTypeDto.Geo:
+        return "#2a9d8f";
+    }}
 }
 </script>
 <style scoped>

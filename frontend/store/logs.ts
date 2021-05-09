@@ -1,9 +1,11 @@
-import { Module, VuexAction, VuexModule, VuexMutation } from 'nuxt-property-decorator';
-import { LogubLog } from '~/models/LogubLog';
-import { Api } from '~/utils/api';
-import { Mapper } from '~/utils/mapper';
-import { FieldTypeDto } from '~/models/dto/FieldSearchDto';
-import { sleep } from '~/utils/helpers';
+import {Module, VuexAction, VuexModule, VuexMutation} from 'nuxt-property-decorator';
+import {LogubLog} from '~/models/LogubLog';
+import {Api} from '~/utils/api';
+import {Mapper} from '~/utils/mapper';
+import {FieldSearchDto, FieldTypeDto} from '~/models/dto/FieldSearchDto';
+import {sleep} from '~/utils/helpers';
+import {schema} from "~/utils/store-accessor";
+import {SearchLogsDto} from "~/models/dto/SearchLogsDto";
 
 @Module({
   name: 'logs',
@@ -24,19 +26,27 @@ export default class Logs extends VuexModule {
   }
 
   @VuexAction
-  async updateLogs(options: { search?: string; size: number, beginAtInMs: number, endAtInMs: number }): Promise<void> {
+  async updateLogs(options: { properties?: Array<FieldSearchDto>; size: number, beginAtInMs: number, endAtInMs: number }): Promise<void> {
+    if(schema.schema.length === 0){
+      await schema.updateSchema();
+      console.log('schema updated')
+    }
+    const business: Array<string> = schema.businessProperties;
+    const system: Array<string> = schema.systemProperties  //sche
+    const basic: Set<string> = schema.basicProperties  //scma.getSystemProperties();
+    //Since business and system properties are defined in schema, we don't care about split them before here
     this.setLoading(true);
     try {
-      const { search, size, beginAtInMs, endAtInMs } = options;
-      const logsPromise = Api.searchLogs({
-        texts: search ? [{
-          name: '',
-          type: FieldTypeDto.FullText,
-          values: [ search ],
-          negation: false
-        }] : [],
-        businessProperties: [],
-        systemProperties: [],
+      const {properties, size, beginAtInMs, endAtInMs} = options;
+      const texts = properties?.filter(v => v.type === FieldTypeDto.FullText);
+      const businessProperties = properties?.filter(v => v.type === FieldTypeDto.Tag && business.includes(v.name!))
+      const systemProperties = properties?.filter(v => v.type === FieldTypeDto.Tag && system.includes(v.name!))
+      const basicProperties = properties?.filter(v => v.type === FieldTypeDto.Tag && basic.has(v.name!))
+      const search : SearchLogsDto = {
+        texts: texts ? texts : [],
+        businessProperties: businessProperties ? businessProperties : [],
+        systemProperties: systemProperties ? systemProperties : [],
+        basicProperties: basicProperties ? basicProperties : [],
         sort: {
           field: 'timestamp',
           order: 'DESC'
@@ -45,7 +55,9 @@ export default class Logs extends VuexModule {
         beginAt: Math.round(endAtInMs / 1000),
         limit: size,
         offset: 0
-      });
+      }
+      console.log("search : ",search);
+      const logsPromise = Api.searchLogs(search);
 
       const all = await Promise.all([logsPromise, sleep(500)]);
       const logs = all[0];

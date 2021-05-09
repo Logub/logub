@@ -3,6 +3,7 @@ package com.logub.logcontroller.api.search;
 import static java.util.Collections.emptyList;
 
 import com.logub.logcontroller.api.schema.LogubSortDto;
+import com.logub.logcontroller.domain.model.search.LogubFieldSearch;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,6 +29,9 @@ public class LogSearchDto {
 
   @Builder.Default
   private List<LogubFieldSearchDto> businessProperties = emptyList();
+
+  @Builder.Default
+  private List<LogubFieldSearch> basicProperties = emptyList();
 
   @Builder.Default
   private int limit = 25;
