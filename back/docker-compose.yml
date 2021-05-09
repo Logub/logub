@@ -11,6 +11,7 @@ services:
       options:
         fluentd-address: localhost:24224
         tag: app.httpd.access
+        env: dev
   spring-app:
     build: ../generator/java/log-generator
     image: "java-generator:latest"
@@ -21,6 +22,9 @@ services:
       options:
         fluentd-address: localhost:24224
         tag: app.spring.log
+        env: env
+    environment:
+      - env=dev
   fluentd:
     build: ./fluentd
     volumes:
