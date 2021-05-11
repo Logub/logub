@@ -20,4 +20,12 @@ public interface IUserBusiness {
      * @return the created user
      */
     User createUser(User user);
+
+    /**
+     * Delete a user in database
+     *
+     * @param id of the user to delete
+     * @return true if deleted, else false
+     */
+    boolean deleteUser(long id);
 }
