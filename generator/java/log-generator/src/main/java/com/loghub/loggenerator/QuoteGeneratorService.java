@@ -45,7 +45,7 @@ public class QuoteGeneratorService {
     public Quote quoteGenerator(Random random, Faker faker) {
     switch (random.nextInt(5)) {
       case 0:
-        return new Quote("RickAndMorty", faker.rickAndMorty().quote());
+        return new Quote("Yoda", faker.yoda().quote());
       case 1:
         return new Quote("GameOfThrones", faker.gameOfThrones().quote());
       case 2:
@@ -53,7 +53,7 @@ public class QuoteGeneratorService {
       case 3:
         return new Quote("LoremIpsum", faker.lorem().sentences(1).get(0));
       case 4:
-        return new Quote("LeagueOfLegends", faker.leagueOfLegends().quote());
+        return new Quote("HarryPotter", faker.harryPotter().quote());
       default:
         return new Quote("Shakespeare", faker.shakespeare().hamletQuote());
     }
