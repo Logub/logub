@@ -45,11 +45,12 @@ RediSearch, indexation...
 
 - Docker - v20.10
 - Docker Compose - v1.29
+- NodeJS 12+ and NPM 6+
 
 ### Launch Logub server
 
-Go to `/back` folder (`cd ./back`)
-Launch the docker-compose with the given command :
+- Go to `/back` folder (`cd ./back`)  
+- Launch the docker-compose with the given command:
 
 ```
 docker-compose up -d
@@ -57,8 +58,12 @@ docker-compose up -d
 
 ### Launch Logub UI
 
-<br/>
-<br/>
+- Go to `/frontend` folder (`cd ./frontend`)
+- Start the UI with the following command:
+
+```
+npm start
+```
 
 ## How to integrate it to your project ?
 
