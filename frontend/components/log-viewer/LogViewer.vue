@@ -13,7 +13,7 @@
       :items-per-page="pageSize"
       no-data-text="No logs found here"
       item-key="id"
-      class="rounded-0 logs-table mb-15"
+      class="rounded-0 logs-table mb-15 row-item"
       @click:row="onRowClicked"
       :options.sync="pagination"
     >
@@ -44,21 +44,21 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import {Component} from 'vue-property-decorator';
-import {DataTableHeader} from 'vuetify';
-import {logs} from '~/utils/store-accessor';
-import {LogLevel, logLevelColor} from '~/models/LogLevel';
+import { Component } from 'vue-property-decorator';
+import { DataTableHeader } from 'vuetify';
+import { logs } from '~/utils/store-accessor';
+import { LogLevel, logLevelColor } from '~/models/LogLevel';
 import SearchBar from '~/components/log-viewer/SearchBar.vue';
-import {defaultLogDateFilter, LogDateFilter} from '~/models/LogDateFilter';
-import {formatDate} from '~/utils/helpers';
-import {LogubLog} from '~/models/LogubLog';
-import {FieldSearchDto} from "~/models/dto/FieldSearchDto";
-import {Watch} from "nuxt-property-decorator";
-import {SortLogsDto} from "~/models/dto/SearchLogsDto";
+import { defaultLogDateFilter, LogDateFilter } from '~/models/LogDateFilter';
+import { formatDate } from '~/utils/helpers';
+import { LogubLog } from '~/models/LogubLog';
+import { FieldSearchDto } from "~/models/dto/FieldSearchDto";
+import { Watch } from "nuxt-property-decorator";
+import { SortLogsDto } from "~/models/dto/SearchLogsDto";
 
 @Component({
   name: "LogViewer",
-  components: {SearchBar}
+  components: { SearchBar }
 })
 export default class LogViewer extends Vue {
   private pageSize: number = Infinity;
@@ -76,23 +76,25 @@ export default class LogViewer extends Vue {
     sortBy: ['timestamp'],
     sortDesc: [true],
     totalItems: 0,
-  }
-  private sort : SortLogsDto = {
+  };
+  private sort: SortLogsDto = {
     field: 'timestamp',
     order: 'DESC'
-  }
+  };
+
   @Watch('pagination')
-  watchPagination(){
+  watchPagination() {
     console.log(this.pagination);
-    if(this.pagination.sortBy.length > 0 && this.pagination.sortBy[0] === 'timestamp'){
+    if (this.pagination.sortBy.length > 0 && this.pagination.sortBy[0] === 'timestamp') {
       this.sort = {
         field: 'timestamp',
         order: this.pagination.sortDesc[0] ? 'DESC' : 'ASC'
-      }
+      };
 
       this.fetchMoreLogs();
     }
   }
+
   private headers: DataTableHeader[] = [
     {
       text: 'DATE',
@@ -208,5 +210,9 @@ export default class LogViewer extends Vue {
 .level-item {
   border-left: 3px solid white;
   margin-right: 10px;
+}
+
+.row-item {
+  cursor: pointer;
 }
 </style>
