@@ -29,11 +29,11 @@ export default class Logs extends VuexModule {
   async updateLogs(options: { properties?: Array<FieldSearchDto>, sort?: SortLogsDto, size: number, beginAtInMs: number, endAtInMs: number }): Promise<void> {
     if (schema.schema.length === 0) {
       await schema.updateSchema();
-      console.log('schema updated');
+      console.log('schema updated', schema.schema);
     }
     const business: Array<string> = schema.businessProperties;
     const system: Array<string> = schema.systemProperties;  //sche
-    const basic: Set<string> = schema.basicProperties;  //scma.getSystemProperties();
+    const basic: Array<string> = schema.basicProperties;  //scma.getSystemProperties();
     //Since business and system properties are defined in schema, we don't care about split them before here
     this.setLoading(true);
     try {
@@ -41,15 +41,15 @@ export default class Logs extends VuexModule {
       const texts = properties?.filter(v => v.type === FieldTypeDto.FullText);
       const businessProperties = properties?.filter(v => v.type === FieldTypeDto.Tag && business.includes(v.name!));
       const systemProperties = properties?.filter(v => v.type === FieldTypeDto.Tag && system.includes(v.name!));
-      const basicProperties = properties?.filter(v => v.type === FieldTypeDto.Tag && basic.has(v.name!));
+      const basicProperties = properties?.filter(v => v.type === FieldTypeDto.Tag && basic.includes(v.name!));
       const levels = properties?.filter(v => v.type === FieldTypeDto.Tag && v.name!.toLowerCase() === 'level');
       const search: SearchLogsDto = {
-        texts: texts ? texts : [],
-        businessProperties: businessProperties ? businessProperties : [],
-        systemProperties: systemProperties ? systemProperties : [],
-        basicProperties: basicProperties ? basicProperties : [],
-        levels: levels ? levels : [],
-        sort: sort ? sort : {
+        texts: texts ?? [],
+        businessProperties: businessProperties ?? [],
+        systemProperties: systemProperties ?? [],
+        basicProperties: basicProperties ?? [],
+        levels: levels ?? [],
+        sort: sort ?? {
           field: 'timestamp',
           order: 'DESC'
         },

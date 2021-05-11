@@ -22,9 +22,9 @@ export default class Schema extends VuexModule {
 
   private _basicProperties: Set<string> = basicProperties();
 
-  get basicProperties(): Set<string> {
+  get basicProperties(): string[] {
     console.log(this._basicProperties);
-    return this._basicProperties;
+    return [...this._basicProperties];
   }
 
   get businessProperties(): string[] {

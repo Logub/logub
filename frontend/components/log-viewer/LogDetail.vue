@@ -28,15 +28,17 @@
 
         <h3 class="mt-4 mb-2">Custom Properties</h3>
         <div class="ml-4" v-for="(prop, i) in Object.keys(log.businessProperties)" :key="'prop' + i">
-          <p class="default-prop"><b>{{ prop }}:</b> {{ log.businessProperties[prop] || 'N/A' }}  <v-btn
-            depressed
-            x-small
-            color="primary"
-            v-if="!isIndexed(prop)"
-            @click="addToIndex(prop)"
-          >
-            Add field to search
-          </v-btn></p>
+          <p class="default-prop"><b>{{ prop }}:</b> {{ log.businessProperties[prop] || 'N/A' }}
+            <v-btn
+              depressed
+              x-small
+              color="primary"
+              v-if="!isIndexed(prop)"
+              @click="addToIndex(prop)"
+            >
+              Add field to search
+            </v-btn>
+          </p>
         </div>
       </v-card-text>
       <v-divider></v-divider>
@@ -45,12 +47,12 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
+import { Component } from 'nuxt-property-decorator';
 import { Prop } from 'nuxt-property-decorator';
 import { LogubLog } from '~/models/LogubLog';
 import { LogLevel, logLevelColor } from '~/models/LogLevel';
 import { formatDate } from '~/utils/helpers';
-import {schema} from "~/utils/store-accessor";
+import { schema } from "~/utils/store-accessor";
 
 @Component({
   name: "LogDetail"
@@ -76,10 +78,12 @@ export default class LogDetail extends Vue {
   get formattedDate() {
     return formatDate(this.log.timestamp, true);
   }
-  isIndexed(value: string): boolean{
+
+  isIndexed(value: string): boolean {
     return schema.businessProperties.includes(value);
   }
-  addToIndex(value: string){
+
+  addToIndex(value: string) {
     schema.addFieldToSchema(value);
   }
 }
