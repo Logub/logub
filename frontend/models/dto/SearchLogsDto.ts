@@ -6,12 +6,14 @@ export interface SearchLogsDto {
   systemProperties: Array<FieldSearchDto>;
   basicProperties: Array<FieldSearchDto>;
   levels: Array<FieldSearchDto>;
-  sort: {
-    field?: string;
-    order?: 'ASC' | 'DESC'
-  };
+  sort: SortLogsDto;
   beginAt?: number;
   endAt?: number;
   limit?: number;
   offset?: number;
+}
+
+export interface SortLogsDto {
+  field?: string;
+  order?: 'ASC' | 'DESC'
 }

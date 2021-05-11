@@ -15,6 +15,7 @@
       item-key="id"
       class="rounded-0 logs-table mb-15"
       @click:row="onRowClicked"
+      :options.sync="pagination"
     >
       <template v-slot:footer="{ options }">
         <v-progress-linear
@@ -43,19 +44,21 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
-import { DataTableHeader } from 'vuetify';
-import { logs } from '~/utils/store-accessor';
-import { LogLevel, logLevelColor } from '~/models/LogLevel';
+import {Component} from 'vue-property-decorator';
+import {DataTableHeader} from 'vuetify';
+import {logs} from '~/utils/store-accessor';
+import {LogLevel, logLevelColor} from '~/models/LogLevel';
 import SearchBar from '~/components/log-viewer/SearchBar.vue';
-import { defaultLogDateFilter, LogDateFilter } from '~/models/LogDateFilter';
-import { formatDate } from '~/utils/helpers';
-import { LogubLog } from '~/models/LogubLog';
-import {FieldSearchDto, FieldTypeDto} from "~/models/dto/FieldSearchDto";
+import {defaultLogDateFilter, LogDateFilter} from '~/models/LogDateFilter';
+import {formatDate} from '~/utils/helpers';
+import {LogubLog} from '~/models/LogubLog';
+import {FieldSearchDto} from "~/models/dto/FieldSearchDto";
+import {Watch} from "nuxt-property-decorator";
+import {SortLogsDto} from "~/models/dto/SearchLogsDto";
 
 @Component({
   name: "LogViewer",
-  components: { SearchBar }
+  components: {SearchBar}
 })
 export default class LogViewer extends Vue {
   private pageSize: number = Infinity;
@@ -66,7 +69,30 @@ export default class LogViewer extends Vue {
 
   private currentDateRange: LogDateFilter = defaultLogDateFilter;
   private currentSearch: Array<FieldSearchDto> = [];
+  private pagination = {
+    descending: true,
+    page: 1,
+    rowsPerPage: 25,
+    sortBy: ['timestamp'],
+    sortDesc: [true],
+    totalItems: 0,
+  }
+  private sort : SortLogsDto = {
+    field: 'timestamp',
+    order: 'DESC'
+  }
+  @Watch('pagination')
+  watchPagination(){
+    console.log(this.pagination);
+    if(this.pagination.sortBy.length > 0 && this.pagination.sortBy[0] === 'timestamp'){
+      this.sort = {
+        field: 'timestamp',
+        order: this.pagination.sortDesc[0] ? 'DESC' : 'ASC'
+      }
 
+      this.fetchMoreLogs();
+    }
+  }
   private headers: DataTableHeader[] = [
     {
       text: 'DATE',
@@ -108,7 +134,9 @@ export default class LogViewer extends Vue {
   }
 
   mounted() {
-    this.fetchMoreLogs();
+    let timerId = setInterval(() => {
+      this.fetchMoreLogs();
+    }, 10000);
   }
 
   onIntersect(entries: IntersectionObserverEntry[], observer: IntersectionObserver) {
@@ -142,14 +170,16 @@ export default class LogViewer extends Vue {
     logs.updateLogs({
       properties: this.currentSearch,
       size: this.currentPageSize,
-      beginAtInMs: this.currentDateRange.beginAt.getTime(),
-      endAtInMs: this.currentDateRange.endAt.getTime()
+      beginAtInMs: this.currentDateRange.beginAt().getTime(),
+      endAtInMs: this.currentDateRange.endAt().getTime(),
+      sort: this.sort
     });
   }
 
   private format(dateNumber: number): string {
     return formatDate(dateNumber);
   }
+
 }
 </script>
 <style scoped>

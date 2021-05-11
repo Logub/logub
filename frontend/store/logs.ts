@@ -5,7 +5,7 @@ import {Mapper} from '~/utils/mapper';
 import {FieldSearchDto, FieldTypeDto} from '~/models/dto/FieldSearchDto';
 import {sleep} from '~/utils/helpers';
 import {schema} from "~/utils/store-accessor";
-import {SearchLogsDto} from "~/models/dto/SearchLogsDto";
+import {SearchLogsDto, SortLogsDto} from "~/models/dto/SearchLogsDto";
 
 @Module({
   name: 'logs',
@@ -26,7 +26,7 @@ export default class Logs extends VuexModule {
   }
 
   @VuexAction
-  async updateLogs(options: { properties?: Array<FieldSearchDto>; size: number, beginAtInMs: number, endAtInMs: number }): Promise<void> {
+  async updateLogs(options: { properties?: Array<FieldSearchDto>, sort?: SortLogsDto, size: number, beginAtInMs: number, endAtInMs: number }): Promise<void> {
     if(schema.schema.length === 0){
       await schema.updateSchema();
       console.log('schema updated')
@@ -37,7 +37,7 @@ export default class Logs extends VuexModule {
     //Since business and system properties are defined in schema, we don't care about split them before here
     this.setLoading(true);
     try {
-      const {properties, size, beginAtInMs, endAtInMs} = options;
+      const {properties, size, beginAtInMs, endAtInMs, sort} = options;
       const texts = properties?.filter(v => v.type === FieldTypeDto.FullText);
       const businessProperties = properties?.filter(v => v.type === FieldTypeDto.Tag && business.includes(v.name!))
       const systemProperties = properties?.filter(v => v.type === FieldTypeDto.Tag && system.includes(v.name!))
@@ -49,7 +49,7 @@ export default class Logs extends VuexModule {
         systemProperties: systemProperties ? systemProperties : [],
         basicProperties: basicProperties ? basicProperties : [],
         levels: levels ? levels : [],
-        sort: {
+        sort: sort ? sort : {
           field: 'timestamp',
           order: 'DESC'
         },

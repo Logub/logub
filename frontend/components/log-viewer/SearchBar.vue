@@ -63,33 +63,33 @@ export default class SearchBar extends Vue {
     defaultLogDateFilter,
     {
       text: 'Last 30 minutes',
-      beginAt: moment().toDate(),
-      endAt: moment().subtract(30, "minutes").toDate()
+      beginAt: () => moment().toDate(),
+      endAt: () => moment().subtract(30, "minutes").toDate()
     },
     {
       text: 'Last 1 hour',
-      beginAt: moment().toDate(),
-      endAt: moment().subtract(1, "hour").toDate()
+      beginAt: () => moment().toDate(),
+      endAt: () => moment().subtract(1, "hour").toDate()
     },
     {
       text: 'Last 2 hours',
-      beginAt: moment().toDate(),
-      endAt: moment().subtract(2, "hours").toDate()
+      beginAt: () => moment().toDate(),
+      endAt: () => moment().subtract(2, "hours").toDate()
     },
     {
       text: 'Last 4 hours',
-      beginAt: moment().toDate(),
-      endAt: moment().subtract(4, "hours").toDate()
+      beginAt: () => moment().toDate(),
+      endAt: () => moment().subtract(4, "hours").toDate()
     },
     {
       text: 'Last 1 day',
-      beginAt: moment().toDate(),
-      endAt: moment().subtract(1, "day").toDate()
+      beginAt: () => moment().toDate(),
+      endAt: () => moment().subtract(1, "day").toDate()
     },
     {
       text: 'Last 1 week',
-      beginAt: moment().toDate(),
-      endAt: moment().subtract(1, "week").toDate()
+      beginAt:() =>  moment().toDate(),
+      endAt: () => moment().subtract(1, "week").toDate()
     }
   ];
 
