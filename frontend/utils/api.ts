@@ -1,6 +1,8 @@
-import { SearchLogsDto } from '~/models/dto/SearchLogsDto';
-import { LogubLogDto } from '~/models/dto/LogubLogDto';
-import { $axios } from '~/utils/store-accessor';
+import {SearchLogsDto} from '~/models/dto/SearchLogsDto';
+import {LogubLogDto} from '~/models/dto/LogubLogDto';
+import {$axios} from '~/utils/store-accessor';
+import {SchemaFieldDto} from "~/models/dto/SchemaFieldDto";
+import {FieldTypeDto} from "~/models/dto/FieldSearchDto";
 
 export class Api {
 
@@ -12,5 +14,13 @@ export class Api {
 
   static async getSchema(): Promise<string[]> {
     return $axios.$get<string[]>(`${this.API_URL}/logs/schema`);
+  }
+
+  static async addField(businessProperties: string) {
+    const schemaField : SchemaFieldDto = {
+      type: FieldTypeDto.Tag,
+      name: businessProperties
+    };
+    return $axios.$post<void>(`${this.API_URL}/logs/schema`, schemaField);
   }
 }

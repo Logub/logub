@@ -4,5 +4,5 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 public enum LogLevel {
-  INFO, DEBUG, ERROR, WARN, FATAL
+  INFO, DEBUG, ERROR, WARN, FATAL,UNKNOWN
 }

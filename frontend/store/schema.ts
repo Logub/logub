@@ -50,6 +50,8 @@ export default class Schema extends VuexModule {
     }
   }
 
+
+
   @VuexMutation
   private setLoading(isLoading: boolean): void {
     this._loading = isLoading;
@@ -58,5 +60,18 @@ export default class Schema extends VuexModule {
   @VuexMutation
   private setSchema(newLogs: string[]): void {
     this._schema = newLogs;
+  }
+
+
+  @VuexAction
+  async addFieldToSchema(businessProperties: string): Promise<void> {
+    try {
+      await Api.addField(businessProperties);
+      const schema = await Api.getSchema();
+
+      this.setSchema(schema);
+    } catch (err) {
+      console.error(err);
+    }
   }
 }

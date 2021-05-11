@@ -1,5 +1,6 @@
 package com.logub.logcontroller.domain.model;
 
+import static com.logub.logcontroller.domain.model.LogLevel.UNKNOWN;
 import static lombok.AccessLevel.PRIVATE;
 
 import lombok.AllArgsConstructor;
@@ -45,6 +46,6 @@ public class LogubLog {
   private Optional<String> thread = Optional.empty();
   @Builder.Default
   private Optional<String> source = Optional.empty();
-  @NonNull
-  private LogLevel level;
+  @Builder.Default
+  private LogLevel level = UNKNOWN;
 }
