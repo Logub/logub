@@ -2,16 +2,16 @@ package com.loghub.loggenerator;
 
 import com.github.javafaker.App;
 import com.github.javafaker.Faker;
+import com.loghub.loggenerator.model.LogLevelEnum;
 import com.loghub.loggenerator.model.Quote;
+import com.loghub.loggenerator.service.LoggerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 import javax.annotation.PostConstruct;
 
@@ -20,42 +20,29 @@ public class QuoteGeneratorService {
   Logger LOGGER = LoggerFactory.getLogger(QuoteGeneratorService.class);
   List<App> apps;
 
+
+  @Autowired
+  private LoggerService loggerService;
+
   public void generate() {
     StringBuilder log = new StringBuilder();
     Faker faker = new Faker();
     Random random = new Random();
     App app = apps.get(random.nextInt(apps.size()));
-    final Level[] values = Level.values();
+    final LogLevelEnum[] values = LogLevelEnum.values();
     Quote quote = quoteGenerator(random, faker);
-    try (MDC.MDCCloseable res1 = MDC.putCloseable("app", app.name());
-         final MDC.MDCCloseable res2 = MDC.putCloseable("origin", quote.getFrom());
-         final MDC.MDCCloseable res3 = MDC
-             .putCloseable("correlationId", UUID.randomUUID().toString());
-         final MDC.MDCCloseable res4 = MDC
-             .putCloseable("originRequest", faker.country().name())) {
-      Level level = values[random.nextInt(values.length)];
-      log.append(quote.getQuote());
-      switch (level) {
-        case INFO:
-          LOGGER.info(log.toString());
-          break;
-        case WARN:
-          LOGGER.warn(log.toString());
-          break;
-        case DEBUG:
-          LOGGER.debug(log.toString());
-          break;
-        case ERROR:
-          LOGGER.error(log.toString());
-          break;
-        case TRACE:
-          LOGGER.trace(log.toString());
-          break;
-      }
-    }
+    LogLevelEnum level = values[random.nextInt(values.length)];
+    log.append(quote.getQuote());
+
+    final Map<String, String> businessProperties = new HashMap<>();
+    businessProperties.put("app", app.name());
+    businessProperties.put("origin", quote.getFrom());
+    businessProperties.put("correlationId", UUID.randomUUID().toString());
+    businessProperties.put("originRequest", faker.country().name());
+    this.loggerService.log(level, log.toString(), businessProperties);
   }
 
-  public Quote quoteGenerator(Random random, Faker faker) {
+    public Quote quoteGenerator(Random random, Faker faker) {
     switch (random.nextInt(5)) {
       case 0:
         return new Quote("RickAndMorty", faker.rickAndMorty().quote());
@@ -72,9 +59,6 @@ public class QuoteGeneratorService {
     }
   }
 
-  public static enum Level {
-    INFO, WARN, ERROR, TRACE, DEBUG
-  }
 
   @PostConstruct
   public void init() {
