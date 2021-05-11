@@ -5,6 +5,7 @@ export interface SearchLogsDto {
   businessProperties: Array<FieldSearchDto>;
   systemProperties: Array<FieldSearchDto>;
   basicProperties: Array<FieldSearchDto>;
+  levels: Array<FieldSearchDto>;
   sort: {
     field?: string;
     order?: 'ASC' | 'DESC'

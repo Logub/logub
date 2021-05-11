@@ -42,11 +42,13 @@ export default class Logs extends VuexModule {
       const businessProperties = properties?.filter(v => v.type === FieldTypeDto.Tag && business.includes(v.name!))
       const systemProperties = properties?.filter(v => v.type === FieldTypeDto.Tag && system.includes(v.name!))
       const basicProperties = properties?.filter(v => v.type === FieldTypeDto.Tag && basic.has(v.name!))
+      const levels = properties?.filter(v => v.type === FieldTypeDto.Tag && v.name!.toLowerCase() === 'level' )
       const search : SearchLogsDto = {
         texts: texts ? texts : [],
         businessProperties: businessProperties ? businessProperties : [],
         systemProperties: systemProperties ? systemProperties : [],
         basicProperties: basicProperties ? basicProperties : [],
+        levels: levels ? levels : [],
         sort: {
           field: 'timestamp',
           order: 'DESC'

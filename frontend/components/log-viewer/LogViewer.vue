@@ -62,7 +62,7 @@ export default class LogViewer extends Vue {
 
   private currentPageSize: number = 50;
   private dialogOpen: boolean = false;
-  private selectedLog: LogubLog = null;
+  private selectedLog: LogubLog | null = null;
 
   private currentDateRange: LogDateFilter = defaultLogDateFilter;
   private currentSearch: Array<FieldSearchDto> = [];
