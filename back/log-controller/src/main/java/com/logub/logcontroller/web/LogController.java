@@ -17,10 +17,13 @@ import java.util.stream.Collectors;
 @RequestMapping("/logs")
 @CrossOrigin(origins = "*")
 public class LogController {
+
   @Autowired
   private LogService logService;
+
   @Autowired
   private WebMapper mapper;
+
   @PostMapping
   public void logs(@RequestBody LogubLogDto logDto){
     logService.saveLog(mapper.toDomain(logDto));
