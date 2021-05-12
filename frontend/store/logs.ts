@@ -37,6 +37,7 @@ export default class Logs extends VuexModule {
     //Since business and system properties are defined in schema, we don't care about split them before here
     this.setLoading(true);
     try {
+      console.log('Update Logs', options);
       const { properties, size, beginAtInMs, endAtInMs, sort } = options;
       const texts = properties?.filter(v => v.type === FieldTypeDto.FullText);
       const businessProperties = properties?.filter(v => v.type === FieldTypeDto.Tag && business.includes(v.name!));

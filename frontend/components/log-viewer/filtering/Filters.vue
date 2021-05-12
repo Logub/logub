@@ -1,22 +1,53 @@
 <template>
   <v-container fluid>
-    <log-filter class="mb-1" v-for="(basicProp, i) in basicProperties" :key="`basic-${i}`" :field="basicProp"
-                :type="basicType"/>
+    <h3 class="text-center">Filtering</h3>
+    <v-divider class="mx-15 mt-1 mb-6"/>
 
-    <log-filter class="mb-1" v-for="(systemProp, i) in systemProperties" :key="`system-${i}`" :field="systemProp"
-                :type="systemType"/>
+    <v-expansion-panels tile flat class="mb-2">
+      <v-expansion-panel class="color-panel">
+        <v-expansion-panel-header class="font-weight-bold">
+          Basic Properties
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <log-filter class="mb-1" v-for="(basicProp, i) in basicProperties" :key="`basic-${i}`" :field="basicProp"
+                      :type="basicType" @on-search-changed="() => onSearchChanged()"/>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
 
-    <log-filter class="mb-1" v-for="(businessProp, i) in businessProperties" :key="`business-${i}`"
-                :field="businessProp"
-                :type="businessType"/>
+    <v-expansion-panels tile flat class="mb-2">
+      <v-expansion-panel class="color-panel">
+        <v-expansion-panel-header class="font-weight-bold">
+          System Properties
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <log-filter class="mb-1" v-for="(systemProp, i) in systemProperties" :key="`system-${i}`" :field="systemProp"
+                      :type="systemType" @on-search-changed="() => onSearchChanged()"/>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
+
+    <v-expansion-panels tile flat class="mb-2">
+      <v-expansion-panel class="color-panel">
+        <v-expansion-panel-header class="font-weight-bold">
+          Custom Properties
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <log-filter class="mb-1" v-for="(businessProp, i) in businessProperties" :key="`business-${i}`"
+                      :field="businessProp"
+                      :type="businessType" @on-search-changed="() => onSearchChanged()"/>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
   </v-container>
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { Component } from 'nuxt-property-decorator';
-import { schema } from '~/utils/store-accessor';
+import { Component, Emit } from 'nuxt-property-decorator';
+import { schema, search } from '~/utils/store-accessor';
 import LogFilter from '~/components/log-viewer/filtering/LogFilter.vue';
 import { FieldType } from '~/models/LogubLog';
+import { FieldSearchDto } from '~/models/dto/FieldSearchDto';
 
 @Component({
   name: "Filters",
@@ -48,7 +79,16 @@ export default class Filters extends Vue {
   get businessType(): FieldType {
     return FieldType.BUSINESS;
   }
+
+  @Emit()
+  onSearchChanged(): Array<FieldSearchDto> {
+    console.log("SEARCH CHANGED from Filters");
+    return search.matchingQuery;
+  }
 }
 </script>
 <style scoped>
+.color-panel {
+  border: 1px solid #DDD;
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <v-expansion-panels v-if="logs.length > 0">
+  <v-expansion-panels tile flat v-if="logs.length > 0">
     <v-expansion-panel>
       <v-expansion-panel-header class="font-weight-bold">
         {{ this.field }}
@@ -10,6 +10,8 @@
           v-for="log in logs"
           :key="log.log.id"
           :label="log.value"
+          :value="isFieldInMatchingQuery(log.value)"
+          @change="check => onCheckboxChanged(check, log)"
           dense
         />
       </v-expansion-panel-content>
@@ -18,10 +20,11 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { Component, Prop } from 'nuxt-property-decorator';
+import { Component, Emit, Prop } from 'nuxt-property-decorator';
 import { FieldType, LogFieldFilter, LogubLog } from '~/models/LogubLog';
-import { logs } from '~/utils/store-accessor';
+import { logs, search } from '~/utils/store-accessor';
 import { SystemProperties } from '~/models/SystemProperties';
+import { FieldSearchDto, FieldTypeDto } from '~/models/dto/FieldSearchDto';
 
 @Component({
   name: "LogFilter"
@@ -62,12 +65,40 @@ export default class LogFilter extends Vue {
     return res;
   }
 
+  get isFieldInMatchingQuery() {
+    return (value: string) => !!search.matchingQuery.find(m => m.name === this.field && m.values.includes(value));
+  }
+
   isFieldValidBasic(field: string, log: LogubLog): field is keyof LogubLog {
     return field in log;
   }
 
   isFieldValidSystem(field: string, log: LogubLog): field is keyof SystemProperties {
     return field in log.tags;
+  }
+
+  onCheckboxChanged(checked: boolean, selectedLog: LogFieldFilter): void {
+    if (checked) {
+      search.addToQuery({
+        name: this.field,
+        type: FieldTypeDto.Tag,
+        values: [selectedLog.value],
+        negation: !checked,
+      });
+      this.onSearchChanged();
+    } else {
+      const query = search.matchingQuery.findIndex(m => m.name === this.field && m.values.includes(selectedLog.value));
+      if (query !== -1) {
+        search.removeFromQuery(query);
+        this.onSearchChanged();
+      }
+    }
+  }
+
+  @Emit()
+  onSearchChanged(): Array<FieldSearchDto> {
+    console.log("SEARCH CHANGED from logFilter");
+    return search.matchingQuery;
   }
 }
 </script>

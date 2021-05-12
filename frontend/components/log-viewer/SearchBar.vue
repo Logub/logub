@@ -136,11 +136,12 @@ export default class SearchBar extends Vue {
 
   formatChip(field: FieldSearchDto): string {
     const multiple = field.values.length > 1;
+    const negation = field.negation ? '- ' : '';
     switch (field.type) {
       case FieldTypeDto.FullText:
-        return `message:${multiple ? '(' : ''}${field.values.join(" AND ")}${multiple ? ')' : ''}`;
+        return `${negation}message:${multiple ? '(' : ''}${field.values.join(" AND ")}${multiple ? ')' : ''}`;
       case FieldTypeDto.Tag:
-        return `${field.name}:${multiple ? '(' : ''}${field.values.join(" OR ")}${multiple ? ')' : ''}`;
+        return `${negation}${field.name}:${multiple ? '(' : ''}${field.values.join(" OR ")}${multiple ? ')' : ''}`;
       default:
         throw new Error("unsupported");
     }

@@ -5,10 +5,7 @@
       @on-search-changed="onSearchChanged"
     />
     <v-row align="start" justify="space-around">
-      <v-col cols="3">
-        <filters/>
-      </v-col>
-      <v-col cols="9">
+      <v-col :cols="logsData.length > 0 ? 9 : 12">
         <v-data-table
           dense
           calculate-widths
@@ -44,6 +41,9 @@
         </span>
           </template>
         </v-data-table>
+      </v-col>
+      <v-col v-if="logsData.length > 0" cols="3">
+        <filters @on-search-changed="onSearchChanged"/>
       </v-col>
     </v-row>
     <log-detail v-if="selectedLog" v-model="dialogOpen" :log="selectedLog"/>
@@ -143,6 +143,7 @@ export default class LogViewer extends Vue {
   }
 
   mounted() {
+    this.fetchMoreLogs();
     let timerId = setInterval(() => {
       this.fetchMoreLogs();
     }, 10000);

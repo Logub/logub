@@ -19,6 +19,30 @@ export default class Search extends VuexModule {
     return this._matchingQuery;
   }
 
+  private static isBlank(str: string) {
+    return (!str || /^\s*$/.test(str));
+  }
+
+  private static stringToFieldTagSearch(v: string): FieldSearchDto {
+    const tag = v.split(':');
+    console.log(tag);
+    return {
+      name: tag[0].replace('-', ''),
+      type: FieldTypeDto.Tag,
+      values: [tag[1]],
+      negation: tag[0].startsWith("-"),
+    };
+  };
+
+  private static stringToFieldTextSearch(v: string): FieldSearchDto {
+    return {
+      name: "message",
+      type: FieldTypeDto.FullText,
+      values: [v],
+      negation: v.startsWith("-"),
+    };
+  };
+
   @VuexAction
   setSearch(search: string): void {
     this.setSearchQuery(search);
@@ -69,6 +93,11 @@ export default class Search extends VuexModule {
   }
 
   @VuexAction
+  addToQuery(value: FieldSearchDto) {
+    this.addToMatchingQuery(value);
+  }
+
+  @VuexAction
   removeFromQuery(index: number) {
     this.removeFromMatchingQuery(index);
   }
@@ -96,28 +125,4 @@ export default class Search extends VuexModule {
   private removeFromMatchingQuery(index: number) {
     this._matchingQuery.splice(index, 1);
   }
-
-  private static isBlank(str: string) {
-    return (!str || /^\s*$/.test(str));
-  }
-
-  private static stringToFieldTagSearch(v: string): FieldSearchDto {
-    const tag = v.split(':');
-    console.log(tag);
-    return {
-      name: tag[0].replace('-', ''),
-      type: FieldTypeDto.Tag,
-      values: [tag[1]],
-      negation: tag[0].startsWith("-"),
-    };
-  };
-
-  private static stringToFieldTextSearch(v: string): FieldSearchDto {
-    return {
-      name: "message",
-      type: FieldTypeDto.FullText,
-      values: [v],
-      negation: v.startsWith("-"),
-    };
-  };
 }
