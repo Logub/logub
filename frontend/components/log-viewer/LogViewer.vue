@@ -143,10 +143,9 @@ export default class LogViewer extends Vue {
   }
 
   mounted() {
-    this.fetchMoreLogs();
     let timerId = setInterval(() => {
       this.fetchMoreLogs();
-    }, 10000);
+    }, 15000);
   }
 
   onIntersect(entries: IntersectionObserverEntry[], observer: IntersectionObserver) {
