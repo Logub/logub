@@ -19,10 +19,10 @@
         nuxt
       >
         <v-list-item-icon class="ml-3 mr-5">
-          <v-icon>{{ route.icon }}</v-icon>
+          <v-icon color="info">{{ route.icon }}</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title class="font-weight-regular">{{ route.title }}</v-list-item-title>
+          <v-list-item-title class="font-weight-regular info--text">{{ route.title }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
