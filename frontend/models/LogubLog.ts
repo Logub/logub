@@ -7,7 +7,7 @@ export interface LogubLog {
   timestamp: number;
   level: LogLevel;
   tags: SystemProperties;
-  businessProperties: { [key: string]: object };
+  businessProperties: { [key: string]: string };
   service?: string;
   message?: string;
   logger?: string;
@@ -15,7 +15,15 @@ export interface LogubLog {
   source?: string;
 }
 
+export function basicProperties(): Set<string> {
+  return new Set(['service', 'message', 'logger', 'thread', 'source']);
+}
 
-export function basicProperties(): Set<string>{
-  return new Set(['service','message', 'logger', 'thread', 'source' ])
+export enum FieldType {
+  BASIC, SYSTEM, BUSINESS
+}
+
+export interface LogFieldFilter {
+  log: LogubLog;
+  value: string;
 }

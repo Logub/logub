@@ -1,7 +1,6 @@
 import { Module, VuexAction, VuexModule, VuexMutation } from 'nuxt-property-decorator';
-import {basicProperties, LogubLog} from '~/models/LogubLog';
+import { basicProperties } from '~/models/LogubLog';
 import { Api } from '~/utils/api';
-import { Mapper } from '~/utils/mapper';
 
 @Module({
   name: 'schema',
@@ -16,9 +15,16 @@ export default class Schema extends VuexModule {
   }
 
   private _schema: string[] = [];
-  private _basicProperties: Set<string> = basicProperties();
+
   get schema(): string[] {
     return this._schema;
+  }
+
+  private _basicProperties: Set<string> = basicProperties();
+
+  get basicProperties(): string[] {
+    console.log(this._basicProperties);
+    return [...this._basicProperties];
   }
 
   get businessProperties(): string[] {
@@ -29,11 +35,6 @@ export default class Schema extends VuexModule {
   get systemProperties(): string[] {
     return this.schema.filter(v => v.startsWith("systemProperties."))
       .map(v => v.replace('systemProperties.', ''));
-  }
-
-  get basicProperties(): Set<string> {
-    console.log(this._basicProperties)
-    return this._basicProperties;
   }
 
   @VuexAction
@@ -50,19 +51,6 @@ export default class Schema extends VuexModule {
     }
   }
 
-
-
-  @VuexMutation
-  private setLoading(isLoading: boolean): void {
-    this._loading = isLoading;
-  }
-
-  @VuexMutation
-  private setSchema(newLogs: string[]): void {
-    this._schema = newLogs;
-  }
-
-
   @VuexAction
   async addFieldToSchema(businessProperties: string): Promise<void> {
     try {
@@ -73,5 +61,15 @@ export default class Schema extends VuexModule {
     } catch (err) {
       console.error(err);
     }
+  }
+
+  @VuexMutation
+  private setLoading(isLoading: boolean): void {
+    this._loading = isLoading;
+  }
+
+  @VuexMutation
+  private setSchema(newLogs: string[]): void {
+    this._schema = newLogs;
   }
 }

@@ -5,7 +5,7 @@ export interface LogubLogDto {
   index: string;
   service?: string;
   systemProperties: SystemPropertiesDto;
-  businessProperties: { [key: string]: object };
+  businessProperties: { [key: string]: string };
   message?: string;
   logger?: string;
   thread?: string;

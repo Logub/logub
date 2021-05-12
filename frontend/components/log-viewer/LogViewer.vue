@@ -4,31 +4,33 @@
       @on-time-changed="onTimeChanged"
       @on-search-changed="onSearchChanged"
     />
-    <v-data-table
-      dense
-      calculate-widths
-      :headers="headers"
-      :items="logsData"
-      hide-default-footer
-      :items-per-page="pageSize"
-      no-data-text="No logs found here"
-      item-key="id"
-      class="rounded-0 logs-table mb-15"
-      @click:row="onRowClicked"
-      :options.sync="pagination"
-    >
-      <template v-slot:footer="{ options }">
-        <v-progress-linear
-          v-if="isLoading"
-          color="primary"
-          indeterminate
-        />
-        <div v-if="isLoading" class="text-center py-2 mx-auto caption">Fetching more logs...</div>
-        <div v-else class="text-center py-2 mx-auto caption border-top">No more logs</div>
-      </template>
-      <template v-slot:item.timestamp="{ item, value, index }">
-        <span class="level-item" :style="logLevelColor(item.level)"/>
-        <span v-intersect="{
+    <v-row align="start" justify="space-around">
+      <v-col :cols="logsData.length > 0 ? 9 : 12">
+        <v-data-table
+          dense
+          calculate-widths
+          :headers="headers"
+          :items="logsData"
+          hide-default-footer
+          :items-per-page="pageSize"
+          no-data-text="No logs found here"
+          item-key="id"
+          class="rounded-0 logs-table mb-15 row-item"
+          @click:row="onRowClicked"
+          :options.sync="pagination"
+        >
+          <template v-slot:footer="{ options }">
+            <v-progress-linear
+              v-if="isLoading"
+              color="primary"
+              indeterminate
+            />
+            <div v-if="isLoading" class="text-center py-2 mx-auto caption">Fetching more logs...</div>
+            <div v-else class="text-center py-2 mx-auto caption border-top">No more logs</div>
+          </template>
+          <template v-slot:item.timestamp="{ item, value, index }">
+            <span class="level-item" :style="logLevelColor(item.level)"/>
+            <span v-intersect="{
             handler: onIntersect,
             options: {
               threshold: [0, 0.5, 1.0]
@@ -37,28 +39,33 @@
           <span style="display: none">{{ index }}</span>
           {{ format(value) }}
         </span>
-      </template>
-    </v-data-table>
+          </template>
+        </v-data-table>
+      </v-col>
+      <v-col v-if="logsData.length > 0" cols="3">
+        <filters @on-search-changed="onSearchChanged"/>
+      </v-col>
+    </v-row>
     <log-detail v-if="selectedLog" v-model="dialogOpen" :log="selectedLog"/>
   </v-container>
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import {Component} from 'vue-property-decorator';
-import {DataTableHeader} from 'vuetify';
-import {logs} from '~/utils/store-accessor';
-import {LogLevel, logLevelColor} from '~/models/LogLevel';
+import { Component, Watch } from 'nuxt-property-decorator';
+import { DataTableHeader } from 'vuetify';
+import { logs } from '~/utils/store-accessor';
+import { LogLevel, logLevelColor } from '~/models/LogLevel';
 import SearchBar from '~/components/log-viewer/SearchBar.vue';
-import {defaultLogDateFilter, LogDateFilter} from '~/models/LogDateFilter';
-import {formatDate} from '~/utils/helpers';
-import {LogubLog} from '~/models/LogubLog';
-import {FieldSearchDto} from "~/models/dto/FieldSearchDto";
-import {Watch} from "nuxt-property-decorator";
-import {SortLogsDto} from "~/models/dto/SearchLogsDto";
+import { defaultLogDateFilter, LogDateFilter } from '~/models/LogDateFilter';
+import { formatDate } from '~/utils/helpers';
+import { LogubLog } from '~/models/LogubLog';
+import { FieldSearchDto } from "~/models/dto/FieldSearchDto";
+import { SortLogsDto } from "~/models/dto/SearchLogsDto";
+import Filters from '~/components/log-viewer/filtering/Filters.vue';
 
 @Component({
   name: "LogViewer",
-  components: {SearchBar}
+  components: { Filters, SearchBar }
 })
 export default class LogViewer extends Vue {
   private pageSize: number = Infinity;
@@ -76,23 +83,25 @@ export default class LogViewer extends Vue {
     sortBy: ['timestamp'],
     sortDesc: [true],
     totalItems: 0,
-  }
-  private sort : SortLogsDto = {
+  };
+  private sort: SortLogsDto = {
     field: 'timestamp',
     order: 'DESC'
-  }
+  };
+
   @Watch('pagination')
-  watchPagination(){
+  watchPagination() {
     console.log(this.pagination);
-    if(this.pagination.sortBy.length > 0 && this.pagination.sortBy[0] === 'timestamp'){
+    if (this.pagination.sortBy.length > 0 && this.pagination.sortBy[0] === 'timestamp') {
       this.sort = {
         field: 'timestamp',
         order: this.pagination.sortDesc[0] ? 'DESC' : 'ASC'
-      }
+      };
 
       this.fetchMoreLogs();
     }
   }
+
   private headers: DataTableHeader[] = [
     {
       text: 'DATE',
@@ -134,6 +143,7 @@ export default class LogViewer extends Vue {
   }
 
   mounted() {
+    this.fetchMoreLogs();
     let timerId = setInterval(() => {
       this.fetchMoreLogs();
     }, 10000);
@@ -208,5 +218,9 @@ export default class LogViewer extends Vue {
 .level-item {
   border-left: 3px solid white;
   margin-right: 10px;
+}
+
+.row-item {
+  cursor: pointer;
 }
 </style>
