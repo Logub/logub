@@ -1,4 +1,112 @@
-// Ref: https://github.com/nuxt-community/vuetify-module#customvariables
-//
-// The variables you want to modify
-// $font-size-root: 20px;
+@import '~vuetify/src/styles/settings/_variables';
+
+
+.v-10 {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.v-15 {
+  display: block;
+  margin-bottom: 15px;
+}
+
+.v-20 {
+  display: block;
+  margin-bottom: 20px;
+}
+
+.v-40 {
+  display: block;
+  margin-bottom: 40px;
+}
+
+.v-50 {
+  display: block;
+  margin-bottom: 50px;
+}
+
+.v-65 {
+  display: block;
+  margin-bottom: 65px;
+}
+
+.v-80 {
+  display: block;
+  margin-bottom: 80px;
+}
+
+.col-left {
+  display: flex !important;
+  justify-content: flex-start !important;
+}
+
+.col-center {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.col-right {
+  display: flex !important;
+  justify-content: flex-end !important;
+}
+
+.no-background-hover::before {
+  background-color: transparent !important; }
+
+@for $i from 1 through 10 {
+  .line-overflow-#{$i} {
+    display: -webkit-box;
+    -webkit-line-clamp: $i;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+
+.sub {
+  color: var(--v-subtitle-base);
+}
+.text-responsive {
+  @media #{map-get($display-breakpoints, 'md-and-up')} {
+    font-size: 14px!important;
+  }
+  @media #{map-get($display-breakpoints, 'sm-and-down')} {
+    font-size: 12px!important;
+  }
+}
+
+.icon-responsive {
+  @media #{map-get($display-breakpoints, 'md-and-up')} {
+    font-size: 20px!important;
+  }
+  @media #{map-get($display-breakpoints, 'sm-and-down')} {
+    font-size: 18px!important;
+  }
+}
+.row{
+  padding: 0!important;
+  margin: 0!important;
+  word-wrap: break-word!important;
+}
+
+$sizes: lg, md, xl, sm;
+
+@each $size in $sizes {
+  @for $i from 1 through 15 {
+    .col-#{$size}-#{$i} {
+      padding: 0!important;
+      margin: 0!important;
+      word-wrap: break-word!important;
+    }
+  }
+}
+
+
+
+.col{
+  padding: 0!important;
+  margin: 0!important;
+  word-wrap: break-word!important;
+}

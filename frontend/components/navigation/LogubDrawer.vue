@@ -21,17 +21,23 @@
         <v-list-item-icon class="ml-3 mr-5">
           <v-icon>{{ route.icon }}</v-icon>
         </v-list-item-icon>
-
         <v-list-item-content>
           <v-list-item-title class="font-weight-regular">{{ route.title }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
+    <template v-slot:append>
+      <div class="px-6 pb-7">
+        <v-btn block :color="'#039BE5'" style="color: white" @click="$router.push('/demo')">
+          Try it now !
+        </v-btn>
+      </div>
+    </template>
   </v-navigation-drawer>
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { Component } from 'nuxt-property-decorator';
+import {Component} from 'nuxt-property-decorator';
 
 @Component({
   name: "LogubDrawer"
