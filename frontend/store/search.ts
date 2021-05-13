@@ -1,5 +1,5 @@
-import { Module, VuexAction, VuexModule, VuexMutation } from 'nuxt-property-decorator';
-import { FieldSearchDto, FieldTypeDto } from '~/models/dto/FieldSearchDto';
+import {Module, VuexAction, VuexModule, VuexMutation} from 'nuxt-property-decorator';
+import {FieldSearchDto, FieldTypeDto} from '~/models/dto/FieldSearchDto';
 
 @Module({
   name: 'search',
@@ -35,6 +35,7 @@ export default class Search extends VuexModule {
   };
 
   private static stringToFieldTextSearch(v: string): FieldSearchDto {
+    console.log("stringToFieldTextSearch : " + v)
     return {
       name: "message",
       type: FieldTypeDto.FullText,
@@ -54,21 +55,12 @@ export default class Search extends VuexModule {
     const regex = /\S+:\S+/gm;
     let m;
     const textInQuoteRegex = /(["'])(?:\\.|[^\\])*?\1/gm;
-
-    while ((m = textInQuoteRegex.exec(this.searchQuery)) !== null) {
-      // This is necessary to avoid infinite loops with zero-width matches
-      if (m.index === regex.lastIndex) {
-        regex.lastIndex++;
-      }
-      // The result can be accessed through the `m`-variable.
-      console.log(m);
-      m.forEach((match, groupIndex) => {
-        if (groupIndex == 0) {
-          this.addToMatchingQuery(Search.stringToFieldTextSearch(match));
-        }
-      });
+    let quotedText = this.searchQuery.match(textInQuoteRegex);
+    if (quotedText) {
+      quotedText
+        .map(v => v.substr(1, v.length - 2))
+        .forEach(v => this.addToMatchingQuery(Search.stringToFieldTextSearch(v)));
     }
-
     let str = this.searchQuery.replace(textInQuoteRegex, '');
     while ((m = regex.exec(str)) !== null) {
       // This is necessary to avoid infinite loops with zero-width matches
@@ -83,10 +75,12 @@ export default class Search extends VuexModule {
     }
 
 
-    const value = this.searchQuery.replace(regex, '').trim();
+    const value = str.replace(regex, '').trim();
 
+    console.log("FULL TEXT", value)
     if (!Search.isBlank(value)) {
-      this.addToMatchingQuery(Search.stringToFieldTextSearch(value));
+      console.log("FULL TEXT", value)
+      this.addToQuery(Search.stringToFieldTextSearch(value));
     }
 
     this.setSearchQuery("");
