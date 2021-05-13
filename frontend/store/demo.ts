@@ -1,77 +1,86 @@
-import { Module, VuexAction, VuexModule, VuexMutation } from 'nuxt-property-decorator';
-import {basicProperties, LogubLog} from '~/models/LogubLog';
-import { Api } from '~/utils/api';
-import { Mapper } from '~/utils/mapper';
+import {Module, VuexAction, VuexModule, VuexMutation} from 'nuxt-property-decorator';
+import {Api} from '~/utils/api';
 
 @Module({
-  name: 'schema',
+  name: 'demo',
   stateFactory: true,
   namespaced: true,
 })
-export default class Schema extends VuexModule {
-  private _loading: boolean = true;
+export default class Demo extends VuexModule {
 
-  get loading(): boolean {
-    return this._loading;
-  }
-
-  private _schema: string[] = [];
-  private _basicProperties: Set<string> = basicProperties();
-  get schema(): string[] {
-    return this._schema;
-  }
-
-  get businessProperties(): string[] {
-    return this.schema.filter(v => v.startsWith("businessProperties."))
-      .map(v => v.replace('businessProperties.', ''));
-  }
-
-  get systemProperties(): string[] {
-    return this.schema.filter(v => v.startsWith("systemProperties."))
-      .map(v => v.replace('systemProperties.', ''));
-  }
-
-  get basicProperties(): Set<string> {
-    console.log(this._basicProperties)
-    return this._basicProperties;
-  }
-
-  @VuexAction
-  async updateSchema(): Promise<void> {
-    this.setLoading(true);
-    try {
-      const schema = await Api.getSchema();
-
-      this.setSchema(schema);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      this.setLoading(false);
-    }
-  }
-
-
-
-  @VuexMutation
-  private setLoading(isLoading: boolean): void {
-    this._loading = isLoading;
-  }
-
-  @VuexMutation
-  private setSchema(newLogs: string[]): void {
-    this._schema = newLogs;
+  private _users: any[] = [];
+  get users(): string[] {
+    return this._users;
   }
 
 
   @VuexAction
-  async addFieldToSchema(businessProperties: string): Promise<void> {
+  async updateUser(): Promise<void> {
     try {
-      await Api.addField(businessProperties);
-      const schema = await Api.getSchema();
+      const users = await Api.getUsers();
 
-      this.setSchema(schema);
+      this.setUsers(users);
     } catch (err) {
       console.error(err);
     }
   }
+
+
+  @VuexMutation
+  private setUsers(users: any[]): void {
+    this._users = users;
+  }
+
+
+  @VuexAction
+  async addUser(user: any): Promise<void> {
+    try {
+      await Api.addUser(user);
+      await this.updateUser();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  @VuexAction
+  async addUsers(users: any[]): Promise<void> {
+    try {
+      for (let user of users) {
+        await Api.addUser(user);
+      }
+      await this.updateUser();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  @VuexAction
+  async deleteAll(): Promise<void> {
+    try {
+      await this.updateUser();
+      for (let user of this._users) {
+        await Api.deleteUser(user.id);
+      }
+      await this.updateUser();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  @VuexAction
+  async deleteUser(user: number): Promise<void> {
+    try {
+      await Api.deleteUser(user);
+      await this.updateUser();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  @VuexAction
+  async sendCustomLog(log: any): Promise<void> {
+    try {
+      await Api.postCustomLog(log);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
 }

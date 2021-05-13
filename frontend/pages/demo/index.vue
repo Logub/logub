@@ -6,7 +6,7 @@
         <v-col md="8" lg="6" justify="start">
           <v-row align="start">
             <v-col cols="7">
-              <v-text-field v-model="value.firstName"
+              <v-text-field v-model="currentUser.firstName"
                             outlined
                             rounded
                             label="First name"
@@ -14,14 +14,14 @@
               ></v-text-field>
             </v-col>
             <v-col cols="5">
-              <v-text-field v-model="value.lastName"
+              <v-text-field v-model="currentUser.lastName"
                             outlined
                             rounded
                             label="Last name"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
-              <v-text-field v-model="value.email"
+              <v-text-field v-model="currentUser.email"
                             outlined
                             rounded
                             prepend-icon="mdi-email"
@@ -34,11 +34,14 @@
       </v-row>
 
       <v-row justify="center">
-        <v-btn class="mx-3" color="primary">
+        <v-btn class="mx-3" color="primary" @click="addUser">
           Add this user
         </v-btn>
         <v-btn class="mx-3  darken-1" @click="generateUsers(10)">
           Generate 10 random user
+        </v-btn>
+        <v-btn class="mx-3  darken-1" color="red" style="color: white" @click="deleteAllUser">
+          Delete All
         </v-btn>
       </v-row>
     </v-col>
@@ -80,7 +83,7 @@
                 <td>{{ item.lastName }}</td>
                 <td>{{ item.email }}</td>
                 <td>
-                  <v-btn x-small color="red" style="color: white" outlined fab>
+                  <v-btn x-small color="red" style="color: white" outlined fab @click="removeUser(item)">
                     <v-icon>mdi-close</v-icon>
                   </v-btn>
                 </td>
@@ -155,6 +158,7 @@
             rounded
             depressed
             color="primary"
+            @click="sendCustomLog"
           >
             Send Log
           </v-btn>
@@ -177,6 +181,7 @@ import {Component} from 'vue-property-decorator';
 
 import * as Faker from 'faker';
 import {LogLevel, logLevelColor} from "~/models/LogLevel";
+import {demo} from '~/utils/store-accessor';
 
 @Component({
   name: "Index"
@@ -184,7 +189,7 @@ import {LogLevel, logLevelColor} from "~/models/LogLevel";
 export default class index
   extends Vue {
 
-  value = {
+  currentUser = {
     firstName: "",
     lastName: "",
     email: "",
@@ -193,7 +198,6 @@ export default class index
     "key": "",
     "value": ""
   }
-  users: any[] = [];
   log: any = {
     message: "",
     level: LogLevel.ERROR,
@@ -201,21 +205,39 @@ export default class index
   }
   levels = [LogLevel.INFO, LogLevel.WARN, LogLevel.FATAL, LogLevel.DEBUG, LogLevel.ERROR]
 
+  async mounted(){
+    await demo.updateUser();
+  }
+  get users(){
+    return demo.users;
+  }
   generateUsers(user: number) {
-    const users = []
+    const usersRandom = []
     for (let i = 0; i < user; i++) {
       let firstName = Faker.name.firstName();
       let lastName = Faker.name.lastName();
-      users.push({
+      usersRandom.push({
         firstName: firstName,
         lastName: lastName,
         email: firstName.toLowerCase() + '.' + lastName.toLowerCase() + '@fakemail.com'
-      })
+      });
     }
-    this.users = users;
-    return users;
+    demo.addUsers(usersRandom);
   }
-
+  addUser(){
+    demo.addUser(this.currentUser);
+    this.currentUser = {
+      firstName: "",
+      lastName: "",
+      email: "",
+    }
+  }
+  removeUser(user :any){
+    demo.deleteUser(user.id);
+  }
+  deleteAllUser(){
+    demo.deleteAll();
+  }
   addBusiness() {
     (this.log.businessProperties as any)[this.business.key] = this.business.value;
     this.business = {
@@ -227,7 +249,10 @@ export default class index
   getLogColor() {
     return logLevelColor(this.log.level);
   }
-
+  sendCustomLog(){
+    demo.sendCustomLog(this.log)
+    this.cleanLog();
+  }
   cleanLog() {
     this.business = {
       "key": "",

@@ -1,7 +1,7 @@
 FROM openjdk:11-jdk-slim
-ENV PORT 8081
+ENV PORT 8080
 ENV CLASSPATH /opt/lib
-EXPOSE 8081
+EXPOSE 8080
 
 COPY pom.xml target/lib* /opt/lib/
 

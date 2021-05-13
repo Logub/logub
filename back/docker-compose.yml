@@ -13,6 +13,8 @@ services:
         tag: app.httpd.access
         env: dev
   spring-app:
+    ports:
+      - "8081:8081"
     build: ../generator/java/log-generator
     image: "java-generator:latest"
     links:
@@ -25,6 +27,26 @@ services:
         env: env
     environment:
       - env=dev
+      - PORT=8081
+  log-controller:
+    ports:
+      - "8080:8080"
+    build: ./log-controller
+    image: "log-controller:latest"
+    depends_on:
+      - redis
+    links:
+      - "fluentd"
+      - "redis"
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: app.spring.logController
+        env: env
+    environment:
+      env: dev
+      REDIS_IP: redis
   fluentd:
     build: ./fluentd
     volumes:

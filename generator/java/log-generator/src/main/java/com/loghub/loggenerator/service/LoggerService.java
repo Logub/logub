@@ -15,6 +15,7 @@ import java.util.UUID;
  * Service to log with specific properties.
  */
 @Service
+@Slf4j
 public class LoggerService {
 
     /**
@@ -33,6 +34,7 @@ public class LoggerService {
      * business properties to add
      */
     public void log(final LogLevelEnum level, final String logMessage, final Map<String, String> businessProperties) {
+        try{
         businessProperties.entrySet().stream().forEach(entry -> MDC.putCloseable(entry.getKey(), entry.getValue()));
         switch (level) {
             case INFO:
@@ -50,6 +52,8 @@ public class LoggerService {
             case TRACE:
                 LOGGER.trace(logMessage);
                 break;
+        }}catch (Exception exception){
+            log.error("an error occurs", exception);
         }
     }
 }
