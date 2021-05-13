@@ -12,7 +12,7 @@ services:
         fluentd-address: localhost:24224
         tag: app.httpd.access
         env: dev
-  spring-app:
+  log-generator:
     ports:
       - "8081:8081"
     build: ../generator/java/log-generator

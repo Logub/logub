@@ -19,9 +19,9 @@ public class QueryBuilders {
 
   public static QueryBuilder tag(String field, List<String> values, boolean negative) {
     QueryBuilder queryBuilder =
-        new QueryBuilder().append(fieldToRedisField(field, negative)).append(":{");
+        new QueryBuilder().append(fieldToRedisField(cleanString(field), negative)).append(":{");
     for (int i = 0; i < values.size(); i++) {
-      queryBuilder.append(values.get(i));
+      queryBuilder.append(cleanString(values.get(i)));
       if (i != values.size() - 1) {
         queryBuilder.append('|');
       }
@@ -32,13 +32,13 @@ public class QueryBuilders {
 
   public static QueryBuilder text(String field, String text, boolean negative) {
     QueryBuilder queryBuilder =
-        new QueryBuilder().append(fieldToRedisField(field, negative)).append(':');
+        new QueryBuilder().append(fieldToRedisField(cleanString(field), negative)).append(':');
     text = text.trim();
     if (text.startsWith("*")) {
       text = text.substring(1);
     }
     if (!text.isBlank()) {
-      queryBuilder.append(text);
+      queryBuilder.append(cleanString(text));
     }
     return queryBuilder;
   }
@@ -53,5 +53,11 @@ public class QueryBuilders {
       field = '-' + field;
     }
     return field;
+  }
+  public static String cleanString(String value){
+    for (char c : ",.<>{}[]\"':;!@#$%^&*()-+=~".toCharArray()) {
+      value = value.replace(""+c, "\\"+c);
+    }
+    return value;
   }
 }

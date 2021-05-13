@@ -8,11 +8,9 @@ import java.util.List;
 @Data
 public class QueryBuilder {
   private StringBuilder query;
-  private List<String> toReplace;
 
   public QueryBuilder() {
     this.query = new StringBuilder();
-    toReplace = Arrays.asList(".", "-");
   }
 
   public QueryBuilder append(QueryBuilder query) {
@@ -36,9 +34,6 @@ public class QueryBuilder {
 
   public String toRedisQuery() {
     String finalQuery = this.query.toString();
-    for (String str : toReplace) {
-      finalQuery = finalQuery.replace(str, "\\" + str);
-    }
     finalQuery = finalQuery.replace("\\-@", "-@");
     return finalQuery;
   }

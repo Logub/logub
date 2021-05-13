@@ -28,7 +28,7 @@
     </v-list>
     <template v-slot:append>
       <div class="px-6 pb-7">
-        <v-btn block :color="'#039BE5'" style="color: white" @click="$router.push('/demo')">
+        <v-btn block :color="'#039BE5'" style="color: white" :to="{'name':'demo'}" target="_blank">
           Try it now !
         </v-btn>
       </div>
