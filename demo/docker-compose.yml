@@ -1,0 +1,57 @@
+version: "3.9"
+services:
+  logub-generator:
+    image: "logub/logub-generator:0.1"
+    ports:
+      - "8081:8081"
+    links:
+      - fluentd
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: app.spring.log
+        env: env
+    environment:
+      - env=dev
+      - PORT=8081
+  logub-controller:
+    ports:
+      - "8080:8080"
+    image: "logub/logub-controller:0.1"
+    depends_on:
+      - redis
+    links:
+      - "fluentd"
+      - "redis"
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: app.spring.logubController
+        env: env
+    environment:
+      env: dev
+      REDIS_IP: redis
+  fluentd:
+    image: "logub/logub-fluentd:0.1"
+    links:
+      - "redis"
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+  redis:
+    image: "redislabs/redismod"
+    command: ["/usr/local/etc/redis/redis.conf","--bind","redis","--port", "6379"]
+    volumes:
+      - ./redis/data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+  logub-ui:
+    image: "logub/logub-ui:0.1"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+

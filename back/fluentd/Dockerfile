@@ -5,4 +5,5 @@ USER root
 RUN ["gem", "install", "fluent-plugin-redis"]
 RUN ["gem", "install", "fluent-plugin-rename-key"]
 RUN ["gem", "install", "fluent-plugin-flatten-hash"]
+COPY /conf/fluent.conf /fluentd/etc
 USER fluent
