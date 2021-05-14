@@ -51,6 +51,15 @@ public class User {
         this.email = email;
     }
 
+    public User() {
+    }
+
+    public User(String firstName, String lastName, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "User{" +
