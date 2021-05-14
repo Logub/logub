@@ -55,7 +55,7 @@ public class QueryBuilders {
     return field;
   }
   public static String cleanString(String value){
-    for (char c : ",.<>{}[]\"':;!@#$%^&*()-+=~".toCharArray()) {
+    for (char c : ",.<>{}[]\"':;!@#$%^&()-+=~".toCharArray()) {
       value = value.replace(""+c, "\\"+c);
     }
     return value;
