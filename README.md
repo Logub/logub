@@ -108,7 +108,7 @@ Here are a simplified schema of the search process
 ![Alt text](./images/Flow_of_search.png "Flow of search")
 
 ### Redis 
-As we say before redis in used in order to store our logs by fluentd like this.
+As we say before redis in used in order to store our logs by fluentd like this in the ***Hash type*** of Redis.
 ![Alt text](./images/log_in_redis.png "Logs in redis")
-In order to keep track of the indexed field by the user we also add a "schema" object which use the List type of Redis
+In order to keep track of the indexed field by the user we also add a "schema" object which use the ***List type*** of Redis
 ![Alt text](./images/schema_in_redis.png "Schema in redis")
