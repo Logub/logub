@@ -104,6 +104,9 @@ The Logub API allow user or company to index one or all field of the mdc object.
 In this project the ***Tag Datatype*** are widely used. As we can see from our experiences we often search logs based on business properties when search in logs (eg: a customer id).
 Furthermore, we also use the ***TextField Datatype*** for the log messages, that allow the user to do full text search on this field.
 
+Here are a simplified schema of the search process
+![Alt text](./images/Flow_of_search.png "Flow of search")
+
 ### Redis 
 As we say before redis in used in order to store our logs by fluentd like this.
 ![Alt text](./images/log_in_redis.png "Logs in redis")
