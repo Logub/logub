@@ -26,21 +26,27 @@ export default class Search extends VuexModule {
   private static stringToFieldTagSearch(v: string): FieldSearchDto {
     const tag = v.split(':');
     console.log(tag);
+    let negation = tag[0].startsWith("-");
     return {
       name: tag[0].replace('-', ''),
       type: FieldTypeDto.Tag,
       values: [tag[1]],
-      negation: tag[0].startsWith("-"),
+      negation: negation,
     };
   };
 
   private static stringToFieldTextSearch(v: string): FieldSearchDto {
     console.log("stringToFieldTextSearch : " + v)
+
+    let negation = v.startsWith("-");
+    if (negation) {
+      v = v.substr(1);
+    }
     return {
       name: "message",
       type: FieldTypeDto.FullText,
       values: [v],
-      negation: v.startsWith("-"),
+      negation: negation,
     };
   };
 
@@ -54,12 +60,19 @@ export default class Search extends VuexModule {
   updateSearch() {
     const regex = /\S+:\S+/gm;
     let m;
-    const textInQuoteRegex = /(["'])(?:\\.|[^\\])*?\1/gm;
+    const textInQuoteRegex = /-?(["'])(?:\\.|[^\\])*?\1/gm;
     let quotedText = this.searchQuery.match(textInQuoteRegex);
     if (quotedText) {
       quotedText
-        .map(v => v.substr(1, v.length - 2))
-        .forEach(v => this.addToMatchingQuery(Search.stringToFieldTextSearch(v)));
+        .map(v => {
+          if (v.startsWith("-")) {
+            return '-' + v.substr(2, v.length - 3);
+          } else
+            return v.substr(1, v.length - 2);
+        })
+        .forEach(v => {
+          this.addToMatchingQuery(Search.stringToFieldTextSearch(v))
+        });
     }
     let str = this.searchQuery.replace(textInQuoteRegex, '');
     while ((m = regex.exec(str)) !== null) {
@@ -103,7 +116,8 @@ export default class Search extends VuexModule {
 
   @VuexMutation
   private addToMatchingQuery(v: FieldSearchDto) {
-    const match = this._matchingQuery.find(value => value.name === v.name && v.type === value.type);
+    const match = this._matchingQuery.find(value => value.name === v.name
+      && v.type === value.type && v.negation == value.negation);
     if (match) {
       for (let payload of v.values) {
         if (!match.values.includes(payload)) {
