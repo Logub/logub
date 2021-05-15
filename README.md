@@ -207,9 +207,17 @@ The demo page allows you :
 
 If you return to the main page, you can try to search for the logs you have generated !
 
-WARNING: There is a latency of about 1 minute between the production of a log in a container and its display in Logub. This latency is due to the process of collecting, formatting, and ingesting the logs into the database.
+**WARNING: There is a latency of about 1 minute between the production of a log in a container and its display in Logub. This latency is due to the process of collecting, formatting, and ingesting the logs into the database.**
+### How work the search bar ? 
+You can search by Tag or by Fulltext here are some example
 
-<br/>
+- `env:dev Ut ea vero voluptate*` will search all logs in the dev environnement with a message that start with  `Ut ea vero voluptate`
+- `-env:prod Ut ea vero voluptate*` will search all logs in all environnement except prod with a message that start with `Ut ea vero voluptate`
+- `originRequest:France originRequest:USA` will search all logs with a field originRequest with a value set at France or USA
+- `"dog" "cat"` will search all logs with a that contains "dog" and "cat"
+- `-"dog" "cat"` will search all logs with a that don't contain "dog" but contain "cat"
+
+In order to have a good experience with the product i highly recommend you to create your own log with the playground and add custom attributes and play with it.
 
 ## How to integrate it into your project?
 
