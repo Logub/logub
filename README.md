@@ -30,12 +30,136 @@ Logub use [Fluentd](https://www.fluentd.org) to collect, format and send logs to
 
 ### How data are stored ?
 
-Map ?
-
 ### How data are queried ?
 
-RediSearch, indexation...
+```JAVA
+public class LogubLog {
+  @Builder.Default
+  private String id = UUID.randomUUID().toString();
 
+  @Builder.Default
+  private String index = "principal";
+
+  @NonNull
+  private SystemProperties systemProperties;
+
+  @Builder.Default
+  private Map<String, Object> businessProperties = Collections.emptyMap();
+
+  @Builder.Default
+  private Optional<String> message = Optional.empty();
+
+  @Builder.Default
+  private Instant timestamp = Instant.now();
+
+  @Builder.Default
+  private Optional<String>  service = Optional.empty();
+
+  @Builder.Default
+  private Optional<String> logger = Optional.empty();
+
+  @Builder.Default
+  private Optional<String> thread = Optional.empty();
+  @Builder.Default
+  private Optional<String> source = Optional.empty();
+  @Builder.Default
+  private LogLevel level = UNKNOWN;
+}
+
+public class SystemProperties {
+ @Builder.Default
+ Optional<String> imageName = Optional.empty();
+
+ @Builder.Default
+ Optional<String>  containerName= Optional.empty();
+ @Builder.Default
+ Optional<String>  containerId= Optional.empty();
+
+ @Builder.Default
+ Optional<String>  env= Optional.empty();
+
+ @Builder.Default
+ Optional<String>  host= Optional.empty();
+
+}
+
+
+```
+This is the object we use in order to manipulate logs and retrieve it from the database to allow the Logub UI to display the logs. In order to make complexe query on our logs we use Redis Search on the top of the redis database. As we have added the possibility for the user to change the redis search schema dynamically, we used the "List" data structure in order to keep track of which schema is indexed.
+
+```JAVA
+public class LogSearch {
+
+  @Builder.Default
+  private List<LogubFieldSearch> texts = emptyList();
+  @Builder.Default
+  private List<LogubFieldSearch> systemProperties = emptyList();
+  @Builder.Default
+  private List<LogubFieldSearch> businessProperties = emptyList();
+
+  @Builder.Default
+  private List<LogubFieldSearch> basicProperties = emptyList();
+
+  @Builder.Default
+  private List<LogubFieldSearch> levels = Collections.emptyList();
+  @Builder.Default
+  private int limit = 25;
+  @Builder.Default
+  private int offset = 0;
+  @Builder.Default
+  private Optional<LogubSort> sort = Optional.empty();
+  @Builder.Default
+  private Instant beginAt = Instant.now().minus(15, ChronoUnit.MINUTES);
+  @Builder.Default
+  private Instant endAt = Instant.now();
+
+
+  @SneakyThrows
+  public QueryBuilder toQuery() {
+    var query = new QueryBuilder();
+    var businessPrefix = "businessProperties.";
+    var systemPropertiesPrefix = "systemProperties.";
+    for (LogubFieldSearch properties : businessProperties) {
+      query.append(QueryBuilders.tag(businessPrefix + properties.getName(), properties.getValues(),
+          properties.isNegation()));
+    }
+    for (LogubFieldSearch properties : systemProperties) {
+      query.append(QueryBuilders
+          .tag(systemPropertiesPrefix + properties.getName(), properties.getValues(),
+              properties.isNegation()));
+    }
+    for (LogubFieldSearch properties : basicProperties) {
+      query.append(QueryBuilders
+          .tag(properties.getName(), properties.getValues(),
+              properties.isNegation()));
+    }
+    if (!levels.isEmpty()) {
+      for (LogubFieldSearch level : levels) {
+        var onError = !level.getValues().stream().allMatch(v -> Arrays.stream(LogLevel.values())
+            .anyMatch(enumLevel -> enumLevel.name().equalsIgnoreCase(v)));
+        if(onError){
+          log.error("bad payload for levels {}", level);
+          throw new IllegalArgumentException("bad payload for level");
+        }
+        query.append(QueryBuilders.tag("level",level.getValues(), level.isNegation()));
+      }
+    }
+    for (LogubFieldSearch text : texts) {
+      if(!text.getType().equals(LogubFieldType.FullText)){
+        log.warn("type {} not handle for text search", text.getType());
+      }
+      for (String value : text.getValues()) {
+        query.append(QueryBuilders.text("message", value, text.isNegation()));
+      }
+    }
+
+    return query;
+  }
+
+
+}
+```
+This is the object which allow us to create a plain text redis search query based on the user input. As you can see we create our own (small) QueryBuilders on the top of the JRedisSearch Libary. It's this object that will be send by Logub UI in order to make powerfull search in your logs.
 <br/>
 <br/>
 
