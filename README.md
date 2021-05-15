@@ -3,9 +3,8 @@
 Logub is an application to collect, explore and analyze application logs.
 Proudly powered by Redis for log storage and RediSearch for the exploration and analysis part.
 
-<p align="center">
-<a href="https://raw.githubusercontent.com/Logub/logub/main/images/home-advanced-filter.png"><img src="https://raw.githubusercontent.com/Logub/logub/main/images/home-advanced-filter.png" width="90%" height="auto"></a>
-</p>
+![Alt text](https://raw.githubusercontent.com/Logub/logub/main/images/home-advanced-filter.png "Home Logub")
+
 <p align="center">
 <a href="https://github.com/Logub/logub/blob/main/images/log-details-popup.png?raw=true"><img src="https://github.com/Logub/logub/blob/main/images/log-details-popup.png?raw=true" width="90%" height="auto"></a>
 </p>
