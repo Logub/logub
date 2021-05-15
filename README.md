@@ -14,13 +14,7 @@ Proudly powered by Redis for log storage and RediSearch for the exploration and 
 
 Logub Architecture Diagram :
 
-<p align="center">
-<a href="https://github.com/Logub/logub/blob/main/images/architecture.png?raw=true"><img src="https://github.com/Logub/logub/blob/main/images/architecture.png?raw=true" width="90%" height="auto"></a>
-</p>
-
-<br/>
-<br/>
-
+![Alt text](https://github.com/Logub/logub/blob/main/images/architecture.png?raw=true "Architecture Logub")
 ## How it works ?
 
 Logub use [Fluentd](https://www.fluentd.org) to collect, format and send logs to Redis. The Logub backend then allows to interact with the logs, to do full text search and to index some fields defined by the user (with RediSearch).
