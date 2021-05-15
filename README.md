@@ -209,7 +209,7 @@ If you return to the main page, you can try to search for the logs you have gene
 
 **WARNING: There is a latency of about 1 minute between the production of a log in a container and its display in Logub. This latency is due to the process of collecting, formatting, and ingesting the logs into the database.**
 ### How work the search bar ? 
-You can search by Tag or by Fulltext here are some example
+You can do search by tag or full-text here are some example :
 
 - `env:dev Ut ea vero voluptate*` will search all logs in the dev environnement with a message that start with  `Ut ea vero voluptate`
 - `-env:prod Ut ea vero voluptate*` will search all logs in all environnement except prod with a message that start with `Ut ea vero voluptate`
@@ -217,7 +217,7 @@ You can search by Tag or by Fulltext here are some example
 - `"dog" "cat"` will search all logs with a that contains "dog" and "cat"
 - `-"dog" "cat"` will search all logs with a that don't contain "dog" but contain "cat"
 
-In order to have a good experience with the product i highly recommend you to create your own log with the playground and add custom attributes and play with it.
+In order to have a good testing experience with the app we highly recommend you to create your own log with the playground, add business properties and play with it.
 
 ## How to integrate it into your project?
 
