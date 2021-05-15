@@ -10,7 +10,7 @@
           v-for="log in logs"
           :key="log.log.id"
           :label="log.value"
-          :value="isFieldInMatchingQuery(log.value)"
+          :input-value="isFieldInMatchingQuery(log.value)"
           @change="check => onCheckboxChanged(check, log)"
           dense
         />
