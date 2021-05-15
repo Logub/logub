@@ -1,2 +1,2 @@
 
-./redis/data/appendonly.aof
+./redis/data/**
