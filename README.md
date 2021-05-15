@@ -5,9 +5,7 @@ Proudly powered by Redis for log storage and RediSearch for the exploration and 
 
 ![Alt text](https://raw.githubusercontent.com/Logub/logub/main/images/home-advanced-filter.png "Home Logub")
 
-<p align="center">
-<a href="https://github.com/Logub/logub/blob/main/images/log-details-popup.png?raw=true"><img src="https://github.com/Logub/logub/blob/main/images/log-details-popup.png?raw=true" width="90%" height="auto"></a>
-</p>
+![Alt text](https://github.com/Logub/logub/blob/main/images/log-details-popup.png?raw=true "Home Logub")
 
 <br/>
 <br/>
@@ -228,10 +226,10 @@ In this project the ***Tag Datatype*** are widely used. As we can see from our e
 Furthermore, we also use the ***TextField Datatype*** for the log messages, that allow the user to do full text search on this field.
 
 Here are a simplified schema of the search process
-![Alt text](./images/Flow_of_search.png "Flow of search")
+![Alt text](https://github.com/Logub/logub/blob/main/images/Flow_of_search.png?raw=true "Flow of search")
 
 ### Redis 
 As we say before redis in used in order to store our logs by fluentd like this in the ***Hash type*** of Redis.
-![Alt text](./images/log_in_redis.png "Logs in redis")
+![Alt text](https://github.com/Logub/logub/blob/main/images/log_in_redis.png?raw=true "Logs in redis")
 In order to keep track of the indexed field by the user we also add a "schema" object which use the ***List type*** of Redis
-![Alt text](./images/schema_in_redis.png "Schema in redis")
+![Alt text](https://github.com/Logub/logub/blob/main/images/schema_in_redis.png?raw=true "Schema in redis")
