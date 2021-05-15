@@ -15,6 +15,7 @@ Proudly powered by Redis for log storage and RediSearch for the exploration and 
 Logub Architecture Diagram :
 
 ![Alt text](https://github.com/Logub/logub/blob/main/images/architecture.png?raw=true "Architecture Logub")
+
 ## How it works ?
 
 Logub use [Fluentd](https://www.fluentd.org) to collect, format and send logs to Redis. The Logub backend then allows to interact with the logs, to do full text search and to index some fields defined by the user (with RediSearch).
@@ -314,17 +315,9 @@ Furthermore, we also use the **_TextField Datatype_** for the log messages, that
 Here are a simplified schema of the search process
 ![Alt text](https://github.com/Logub/logub/blob/main/images/Flow_of_search.png?raw=true "Flow of search")
 
-<<<<<<< HEAD
 ### Redis
 
 As we say before redis in used in order to store our logs by fluentd like this in the **_Hash type_** of Redis.
-![Alt text](./images/log_in_redis.png "Logs in redis")
-In order to keep track of the indexed field by the user we also add a "schema" object which use the **_List type_** of Redis
-![Alt text](./images/schema_in_redis.png "Schema in redis")
-=======
-### Redis 
-As we say before redis in used in order to store our logs by fluentd like this in the ***Hash type*** of Redis.
 ![Alt text](https://github.com/Logub/logub/blob/main/images/log_in_redis.png?raw=true "Logs in redis")
-In order to keep track of the indexed field by the user we also add a "schema" object which use the ***List type*** of Redis
+In order to keep track of the indexed field by the user we also add a "schema" object which use the **_List type_** of Redis
 ![Alt text](https://github.com/Logub/logub/blob/main/images/schema_in_redis.png?raw=true "Schema in redis")
->>>>>>> 71cdc7d4a30c7851eb8db87c0402bc7e8544aaa1
