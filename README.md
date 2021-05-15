@@ -196,13 +196,16 @@ docker-compose up -d
 ```
 
 Go to `localhost:3000` to explore logs. (wait 1 minute to see logs coming.) <br/>
-On this page
+On this page, you can view the logs, filter them via the sidebar on the right or search by filter or full-text query via the search bar at the top.
+When you click on a log, the details are displayed and you have the possibility to index business properties. The business properties can be used as filters afterwards
 
 Go to `localhost:3000/demo` to access the playground to add your custom logs. <br/>
 The demo page allows you :
 
 - To create fake users in the demo fake app and see them in logs.
 - To publish your logs in the system.
+
+If you return to the main page, you can try to search for the logs you have generated !
 
 WARNING: There is a latency of about 1 minute between the production of a log in a container and its display in Logub. This latency is due to the process of collecting, formatting, and ingesting the logs into the database.
 
