@@ -5,7 +5,7 @@ Proudly powered by Redis for log storage and RediSearch for the exploration and 
 
 ![Alt text](https://github.com/Logub/logub/blob/main/images/home-with-env-filter.png?raw=true "Home Logub")
 
-![Alt text](https://github.com/Logub/logub/blob/main/images/log-details-popup.png?raw=true "Home Logub")
+![Alt text](https://github.com/Logub/logub/blob/main/images/log-details-popup.png?raw=true "Log details")
 
 <br/>
 <br/>
@@ -23,62 +23,62 @@ Logub use [Fluentd](https://www.fluentd.org) to collect, format, and send logs t
 ### How data are stored?
 
 Data are stored using the [Fluentd Redis Plugin](https://github.com/fluent-plugins-nursery/fluent-plugin-redis).
-It stores each log with `HSET` so for example: `HSET level DEBUG message "Hello World" thread main`
+It stores each log with `HSET`. For example: `HSET level DEBUG message "Hello World" thread main`
 
 ### How data are queried?
 
 ```JAVA
 public class LogubLog {
- @Builder.Default
- private String id = UUID.randomUUID().toString();
+  @Builder.Default
+  private String id = UUID.randomUUID().toString();
 
- @Builder.Default
- private String index = "principal";
+  @Builder.Default
+  private String index = "principal";
 
- @NonNull
- private SystemProperties systemProperties;
+  @NonNull
+  private SystemProperties systemProperties;
 
- @Builder.Default
- private Map<String, Object> businessProperties = Collections.emptyMap();
+  @Builder.Default
+  private Map<String, Object> businessProperties = Collections.emptyMap();
 
- @Builder.Default
- private Optional<String> message = Optional.empty();
+  @Builder.Default
+  private Optional<String> message = Optional.empty();
 
- @Builder.Default
- private Instant timestamp = Instant.now();
+  @Builder.Default
+  private Instant timestamp = Instant.now();
 
- @Builder.Default
- private Optional<String> service = Optional.empty();
+  @Builder.Default
+  private Optional<String> service = Optional.empty();
 
- @Builder.Default
- private Optional<String> logger = Optional.empty();
+  @Builder.Default
+  private Optional<String> logger = Optional.empty();
 
- @Builder.Default
- private Optional<String> thread = Optional.empty();
+  @Builder.Default
+  private Optional<String> thread = Optional.empty();
 
- @Builder.Default
- private Optional<String> source = Optional.empty();
+  @Builder.Default
+  private Optional<String> source = Optional.empty();
 
- @Builder.Default
- private LogLevel level = UNKNOWN;
+  @Builder.Default
+  private LogLevel level = UNKNOWN;
 
 }
 
 public class SystemProperties {
- @Builder.Default
- Optional<String> imageName = Optional.empty();
+  @Builder.Default
+  Optional<String> imageName = Optional.empty();
 
- @Builder.Default
- Optional<String> containerName= Optional.empty();
+  @Builder.Default
+  Optional<String> containerName= Optional.empty();
 
- @Builder.Default
- Optional<String> containerId= Optional.empty();
+  @Builder.Default
+  Optional<String> containerId= Optional.empty();
 
- @Builder.Default
- Optional<String> env= Optional.empty();
+  @Builder.Default
+  Optional<String> env= Optional.empty();
 
- @Builder.Default
- Optional<String> host= Optional.empty();
+  @Builder.Default
+  Optional<String> host= Optional.empty();
 
 }
 
@@ -92,8 +92,10 @@ public class LogSearch {
 
  @Builder.Default
  private List<LogubFieldSearch> texts = emptyList();
+
  @Builder.Default
  private List<LogubFieldSearch> systemProperties = emptyList();
+
  @Builder.Default
  private List<LogubFieldSearch> businessProperties = emptyList();
 
@@ -102,14 +104,19 @@ public class LogSearch {
 
  @Builder.Default
  private List<LogubFieldSearch> levels = Collections.emptyList();
+
  @Builder.Default
  private int limit = 25;
+
  @Builder.Default
  private int offset = 0;
+
  @Builder.Default
  private Optional<LogubSort> sort = Optional.empty();
+
  @Builder.Default
  private Instant beginAt = Instant.now().minus(15, ChronoUnit.MINUTES);
+
  @Builder.Default
  private Instant endAt = Instant.now();
 
@@ -119,6 +126,7 @@ public class LogSearch {
   var query = new QueryBuilder();
   var businessPrefix = "businessProperties.";
   var systemPropertiesPrefix = "systemProperties.";
+
   for (LogubFieldSearch properties : businessProperties) {
     query.append(QueryBuilders.tag(businessPrefix + properties.getName(), properties.getValues(),
     properties.isNegation()));
@@ -133,6 +141,7 @@ public class LogSearch {
     .tag(properties.getName(), properties.getValues(),
     properties.isNegation()));
   }
+
   if (!levels.isEmpty()) {
     for (LogubFieldSearch level : levels) {
       var onError = !level.getValues().stream().allMatch(v -> Arrays.stream(LogLevel.values())
@@ -160,22 +169,24 @@ public class LogSearch {
 }
 ```
 
-This is the object which allows us to create a plain text Redis search query based on the user input. As you can see we create our own (small) QueryBuilders on the top of the JRedisSearch Libary. It's this object that will be sent by Logub UI to make a powerful search in your logs.
+This is the object which allows us to create a plain text RediSearch query based on the user input. As you can see we create our own (small) QueryBuilders on the top of the JRedisSearch Libary. It's this object that will be sent by Logub UI to make a powerful search in your logs.
 <br/>
 <br/>
 
 ## How to run it locally? (DEMO)
 
-In the demo, a DEMO App publishes logs in Logub. You will be able to interact with this DEMO app to generate your logs to then be able to request them in Logub.
+In the demo, a DEMO App publishes logs in Logub. You will be able to interact with this DEMO app to generate your logs and then be able to request them in Logub.
 
 ### Prerequisites
 
 - Docker - v20.10
 - Docker Compose - v1.29
 
+<br/>
+
 ### Launch Logub demo
 
-Make sure that the given ports are free on your PC: `8080, 8081, 3000`
+Make sure that the given ports are free on your PC: `8080, 8081, 3000` & `6379`.
 
 - Go to `/demo` folder (`cd ./demo`)
 - Launch the docker-compose with the given command:
@@ -185,14 +196,17 @@ docker-compose up -d
 ```
 
 Go to `localhost:3000` to explore logs. (wait 1 minute to see logs coming.) <br/>
+On this page
 
 Go to `localhost:3000/demo` to access the playground to add your custom logs. <br/>
-The demo allows you :
+The demo page allows you :
 
 - To create fake users in the demo fake app and see them in logs.
 - To publish your logs in the system.
 
 WARNING: There is a latency of about 1 minute between the production of a log in a container and its display in Logub. This latency is due to the process of collecting, formatting, and ingesting the logs into the database.
+
+<br/>
 
 ## How to integrate it into your project?
 
@@ -203,8 +217,6 @@ You will need four Docker images :
 - Redis image with RediSearch module [Redis Mod Image](https://hub.docker.com/r/redislabs/redismod)
 - Logub controller image to serve log exploring functionnalities - [Logub Contoller Image](https://hub.docker.com/r/logub/logub-controller)
 - Logub UI to explore and query logs - [Logub UI Image](https://hub.docker.com/r/logub/logub-ui)
-
-Logub uses docker Fluentd logging driver to ingest log.
 
 #### Logub log format
 
@@ -232,11 +244,13 @@ If you want to add your business properties, you need to add a nested JSON objec
  "logger": "....",
  "message": ".....",
  "mdc":{
- "myproperties": "....",
- "anotherOne":".....",
+    "myproperties": "....",
+    "anotherOne":".....",
  }
 }
 ```
+
+<br/>
 
 #### Publish logs in Logub
 
@@ -245,72 +259,81 @@ Configuration example for custom integration :
 
 ```YAML
  # Your container(s)
- MY-CUSTOM-APP:
- image: "MY-CUSTOM-APP-IMAGE"
- logging:
- driver: "fluentd"
- options:
- fluentd-address: localhost:24224
- tag: MY-CUSTOM-TAG
- ## Logub Fluentd + Redis conf
- logub-controller:
- image: "logub/logub-controller:0.1"
- ports:
- - "8080:8080"
- depends_on:
- - redis
- links:
- - "fluentd"
- - "redis"
- logub-ui:
- image: "logub/logub-ui:0.1"
- ports:
- - "3000:3000"
- depends_on:
- - redis
- fluentd:
- image: "logub/logub-fluentd:0.1"
- links:
- - "redis"
- ports:
- - "24224:24224"
- - "24224:24224/udp"
- redis:
- image: "redislabs/redismod"
- command: ["/usr/local/etc/redis/redis.conf","--bind","redis","--port", "6379"]
- volumes:
- - ./redis/data:/data
- - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
- ports:
- - "6379:6379"
+  MY-CUSTOM-APP:
+    image: "MY-CUSTOM-APP-IMAGE"
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: MY-CUSTOM-TAG
+  ## Logub Fluentd + Redis conf
+  logub-controller:
+    image: "logub/logub-controller:0.1"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+    links:
+      - "fluentd"
+      - "redis"
+  logub-ui:
+    image: "logub/logub-ui:0.1"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+  fluentd:
+    image: "logub/logub-fluentd:0.1"
+    links:
+      - "redis"
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+  redis:
+    image: "redislabs/redismod"
+    command: ["/usr/local/etc/redis/redis.conf","--bind","redis","--port", "6379"]
+    volumes:
+      - ./redis/data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
 ```
 
 <br/>
 <br/>
 
-## About Redis in Logub?
+## Redis in Logub
 
 ### Redis Search
 
 Logub uses the functionality of RediSearch to process application logs. When logs are persisted in the Redis database, they are accompanied by 3 types of fields.
 
-- SystemProperties are information that Fluentd gives us when sending the logs, like the environment, the container name, and many others.
+- SystemProperties are information that Docker & Fluentd gives us when sending the logs, like the environment, the container name, and many others.
 - BasicProperties which are the basic information that a log have (eg: timestamp, level, service, loggerName, or the message)
 
 These properties are automatically indexed in RedisSearch.
 
-- The Business properties, which are given by the user of Logub in a specific field we ask the user to give which respects the Key - Value (Map) format.
-  We use the dynamic index of Redis search to allow the user to index these "custom properties" if he wants to do some research on it.
+- Business properties are given by the user of Logub in a specific field. The user has to respect a Key - Value (Map) format.
+  We use the dynamic index of Redis search to allow the user to index these "business properties" if he wants to do some research on it. <br/>
+  _For example : A team uses correlationId in there logs to facilitate debug. If they insert the property in a JSON map into their logs then they will be able to query it in Logub._
 
 ```
-{"timestamp":"2021-05-14 11:01:11.686","level":"WARN","thread":"scheduling-1",
-"mdc":{"app":"Toughjoyfax","correlationId":"521f075f-36be-4f85-957e-d1c87ad71aa8","originRequest":"Tonga","origin":"LoremIpsum"},
-"logger":"com.loghub.loggenerator.service.LoggerService","message":"Doloremque dolores ut minima sed."}
+{
+  "timestamp": "2021-05-14 11:01:11.686",
+  "level": "WARN",
+  "thread": "scheduling-1",
+  "mdc": {
+    "app": "Toughjoyfax",
+    "correlationId": "521f075f-36be-4f85-957e-d1c87ad71aa8",
+    "originRequest": "Tonga",
+    "origin": "LoremIpsum"
+  },
+  "logger": "com.loghub.loggenerator.service.LoggerService",
+  "message": "Doloremque dolores ut minima sed."
+}
 ```
 
-Here we have an example of a log that describes how our tool works, when Fluentd flattens and persists in the Redis database,
-the service we called "log-controller" will retrieve these data in the `POST logs/search`. At the top of the library 'JRedisSearch' we build our QueryBuilder to create a RediSearch query based on our model.
-This makes it easier to search the logs while using the power of Redis Search.
+Here we have an example of a log that describes how our tool works, when Fluentd flattens and persists in the Redis database. <br/>
 The Logub API allows the user or company to index one or all fields of the mdc object.
 
 In this project, the **_Tag Datatype_** is widely used. As we can see from our experiences we often search logs based on business properties when searching in logs (eg: a customer id).
@@ -321,7 +344,7 @@ Here are a simplified schema of the search process
 
 ### Redis
 
-As we say before Redis is used to store our logs by Fluentd like this in the **_Hash type_** of Redis.
+As we say before Redis is used to store our logs by Fluentd like this in the **_HashSet type_** of Redis.
 ![Alt text](https://github.com/Logub/logub/blob/main/images/log_in_redis.png?raw=true "Logs in Redis")
 To keep track of the indexed field by the user we also add a "schema" object which uses the **_List type_** of Redis
 ![Alt text](https://github.com/Logub/logub/blob/main/images/schema_in_redis.png?raw=true "Schema in Redis")
