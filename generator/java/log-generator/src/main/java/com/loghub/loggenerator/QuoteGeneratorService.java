@@ -43,17 +43,16 @@ public class QuoteGeneratorService {
   }
 
     public Quote quoteGenerator(Random random, Faker faker) {
-    switch (random.nextInt(5)) {
+    switch (random.nextInt(4)) {
       case 0:
-        return new Quote("Yoda", faker.yoda().quote());
+        return new Quote("RichardIII", faker.shakespeare().kingRichardIIIQuote());
       case 1:
-        return new Quote("GameOfThrones", faker.gameOfThrones().quote());
+        return new Quote("RomeoAndJuliet", faker.shakespeare().romeoAndJulietQuote());
       case 2:
-        return new Quote("ChuckFact", faker.chuckNorris().fact());
+        return new Quote("Animal", faker.animal().name() + ", " + faker.animal().name() + ", "
+                + faker.animal().name() + ", " + faker.animal().name());
       case 3:
         return new Quote("LoremIpsum", faker.lorem().sentences(1).get(0));
-      case 4:
-        return new Quote("HarryPotter", faker.harryPotter().quote());
       default:
         return new Quote("Shakespeare", faker.shakespeare().hamletQuote());
     }
